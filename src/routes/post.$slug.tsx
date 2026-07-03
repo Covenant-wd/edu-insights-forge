@@ -1,0 +1,195 @@
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { Clock, Calendar, Share2 } from "lucide-react";
+import { getPostBySlug } from "@/lib/posts.functions";
+import { PostCard } from "@/components/post-card";
+import { AdSlot } from "@/components/ad-slot";
+
+const postQuery = (slug: string) =>
+  queryOptions({
+    queryKey: ["post", slug],
+    queryFn: () => getPostBySlug({ data: { slug } }),
+  });
+
+export const Route = createFileRoute("/post/$slug")({
+  loader: async ({ context, params }) => {
+    const data = await context.queryClient.ensureQueryData(postQuery(params.slug));
+    if (!data) throw notFound();
+    return data;
+  },
+  head: ({ loaderData, params }) => {
+    if (!loaderData) {
+      return { meta: [{ title: "Article not found" }, { name: "robots", content: "noindex" }] };
+    }
+    const { post } = loaderData;
+    return {
+      meta: [
+        { title: `${post.title} — Academia HQ` },
+        { name: "description", content: post.excerpt ?? post.title },
+        { property: "og:title", content: post.title },
+        { property: "og:description", content: post.excerpt ?? post.title },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: `/post/${params.slug}` },
+        ...(post.cover_image ? [{ property: "og:image", content: post.cover_image }] : []),
+        { name: "twitter:title", content: post.title },
+        { name: "twitter:description", content: post.excerpt ?? post.title },
+      ],
+      links: [{ rel: "canonical", href: `/post/${params.slug}` }],
+      scripts: [{
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description: post.excerpt,
+          image: post.cover_image ? [post.cover_image] : undefined,
+          datePublished: post.published_at,
+          dateModified: post.updated_at,
+          author: { "@type": "Person", name: post.author?.display_name ?? "Academia HQ" },
+          publisher: { "@type": "Organization", name: "Academia HQ", logo: { "@type": "ImageObject", url: "/favicon.ico" } },
+        }),
+      }],
+    };
+  },
+  component: PostPage,
+  notFoundComponent: () => (
+    <div className="container-blog py-24 text-center">
+      <h1 className="text-3xl font-bold">Article not found</h1>
+      <Link to="/" className="mt-4 inline-block text-primary">← Back to homepage</Link>
+    </div>
+  ),
+});
+
+function PostPage() {
+  const { slug } = Route.useParams();
+  const { data } = useSuspenseQuery(postQuery(slug));
+  if (!data) return null;
+  const { post, related } = data;
+
+  const published = post.published_at ? new Date(post.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+
+  return (
+    <article>
+      {/* Header + cover */}
+      <div className="container-blog pt-8">
+        <nav className="text-xs text-muted-foreground">
+          <Link to="/" className="hover:text-primary">Home</Link>
+          {post.category && (<> · <Link to="/category/$slug" params={{ slug: post.category.slug }} className="hover:text-primary">{post.category.name}</Link></>)}
+        </nav>
+        <div className="mt-4 max-w-3xl">
+          {post.category && (
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              {post.category.name}
+            </span>
+          )}
+          <h1 className="mt-4 text-3xl md:text-5xl font-extrabold tracking-tight leading-[1.1]">{post.title}</h1>
+          {post.excerpt && <p className="mt-4 text-lg text-muted-foreground">{post.excerpt}</p>}
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              {post.author?.avatar_url ? (
+                <img src={post.author.avatar_url} alt="" className="h-9 w-9 rounded-full object-cover" />
+              ) : (
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary text-sm font-bold">
+                  {(post.author?.display_name ?? "A").charAt(0)}
+                </span>
+              )}
+              <div>
+                <div className="text-foreground font-semibold">{post.author?.display_name ?? "Academia HQ"}</div>
+                <div className="text-xs">Editorial team</div>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1"><Calendar className="h-4 w-4" />{published}</span>
+            <span className="inline-flex items-center gap-1"><Clock className="h-4 w-4" />{post.read_minutes} min read</span>
+          </div>
+        </div>
+      </div>
+
+      {post.cover_image && (
+        <div className="container-blog mt-8">
+          <img src={post.cover_image} alt={post.title} className="rounded-2xl w-full max-h-[520px] object-cover shadow-hero" width={1600} height={900} />
+        </div>
+      )}
+
+      <div className="container-blog mt-10 grid gap-12 lg:grid-cols-[2.4fr_1fr]">
+        <div>
+          <AdSlot format="leaderboard" className="hidden md:flex mb-8" />
+          <div className="prose-article" dangerouslySetInnerHTML={{ __html: renderContent(post.content) }} />
+          <AdSlot format="large-rectangle" className="my-10" />
+
+          <div className="mt-8 flex items-center gap-3 border-y border-border/60 py-5">
+            <Share2 className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-semibold">Share this article</span>
+            <div className="ml-auto flex gap-2">
+              {["Twitter", "Facebook", "WhatsApp", "LinkedIn"].map((n) => (
+                <a key={n} href="#" className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">{n}</a>
+              ))}
+            </div>
+          </div>
+
+          {post.author?.bio && (
+            <div className="mt-8 rounded-xl border border-border/60 bg-card p-6">
+              <div className="flex items-center gap-3">
+                {post.author.avatar_url && <img src={post.author.avatar_url} alt="" className="h-12 w-12 rounded-full object-cover" />}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Written by</div>
+                  <div className="font-bold">{post.author.display_name}</div>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground">{post.author.bio}</p>
+            </div>
+          )}
+        </div>
+
+        <aside className="space-y-8">
+          <AdSlot format="large-rectangle" />
+          <div className="rounded-xl border border-border/60 bg-card p-5">
+            <div className="text-xs font-semibold uppercase tracking-wider text-primary">Newsletter</div>
+            <p className="mt-2 text-sm text-muted-foreground">Get education updates delivered weekly.</p>
+            <a href="#" className="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Subscribe</a>
+          </div>
+          <AdSlot format="sidebar" className="hidden lg:flex" />
+        </aside>
+      </div>
+
+      {related.length > 0 && (
+        <section className="container-blog py-16 border-t border-border/60 mt-16">
+          <h2 className="text-2xl font-bold">Related articles</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((p) => <PostCard key={p.id} post={p} />)}
+          </div>
+        </section>
+      )}
+    </article>
+  );
+}
+
+/**
+ * Very small markdown-lite renderer for post content stored as plain text.
+ * Escapes HTML then converts headings, paragraphs, and simple emphasis.
+ */
+function renderContent(raw: string): string {
+  const esc = raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  const blocks = esc.split(/\n{2,}/).map((block) => {
+    const b = block.trim();
+    if (!b) return "";
+    if (b.startsWith("### ")) return `<h3>${b.slice(4)}</h3>`;
+    if (b.startsWith("## ")) return `<h2>${b.slice(3)}</h2>`;
+    if (b.startsWith("> ")) return `<blockquote>${b.slice(2)}</blockquote>`;
+    if (/^[-*] /.test(b)) {
+      const items = b.split(/\n/).map((l) => l.replace(/^[-*]\s+/, "").trim()).filter(Boolean);
+      return `<ul>${items.map((i) => `<li>${inline(i)}</li>`).join("")}</ul>`;
+    }
+    return `<p>${inline(b).replace(/\n/g, "<br/>")}</p>`;
+  });
+  return blocks.join("\n");
+}
+
+function inline(s: string): string {
+  return s
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/\[(.+?)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
