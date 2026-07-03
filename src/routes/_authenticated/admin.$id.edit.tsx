@@ -17,5 +17,5 @@ function EditPost() {
   });
   if (isLoading) return <div className="container-blog py-12">Loading…</div>;
   if (!data) return <div className="container-blog py-12">Not found</div>;
-  return <PostEditor initial={data} onSaved={() => navigate({ to: "/admin" })} />;
+  return <PostEditor initial={data as any} onSaved={() => navigate({ to: "/admin" })} />;
 }
