@@ -12,8 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Academia HQ Blog" },
-      { name: "description", content: "Sign in to Academia HQ to manage your articles and dashboard." },
+      { title: "AcademiaHQ Blog" },
+      { name: "description", content: "Sign in to AcademiaHQ to manage your articles and dashboard." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -29,33 +29,52 @@ function AuthPage() {
 
   const google = async () => {
     setLoading(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) { toast.error("Google sign in failed"); setLoading(false); return; }
-    if (result.redirected) return;
-    navigate({ to: "/admin" });
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      if (result.error) { toast.error(result.error.message || "Google sign in failed"); return; }
+      if (result.redirected) return;
+      navigate({ to: "/admin" });
+    } catch (err) {
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Google sign in failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Signed in");
-    navigate({ to: "/admin" });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return toast.error(error.message);
+      toast.success("Signed in");
+      navigate({ to: "/admin" });
+    } catch (err) {
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Sign in failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: name }, emailRedirectTo: window.location.origin + "/admin" },
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Account created — check your email if confirmation is required.");
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name }, emailRedirectTo: window.location.origin + "/admin" },
+      });
+      if (error) return toast.error(error.message);
+      toast.success("Account created — check your email if confirmation is required.");
+    } catch (err) {
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Sign up failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
