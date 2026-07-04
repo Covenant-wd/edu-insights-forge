@@ -23,15 +23,35 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [activeTab, setActiveTab] = useState("signin");
+  
+  // Sign in form state
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [signInError, setSignInError] = useState("");
+  
+  // Sign up form state
+  const [signUpName, setSignUpName] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+  const [signUpError, setSignUpError] = useState("");
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    return password.length >= 6;
+  };
 
   const google = async () => {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-      if (result.error) { toast.error(result.error.message || "Google sign in failed"); return; }
+      if (result.error) { 
+        toast.error(result.error.message || "Google sign in failed"); 
+        return; 
+      }
       if (result.redirected) return;
       navigate({ to: "/admin" });
     } catch (err) {
@@ -44,15 +64,44 @@ function AuthPage() {
 
   const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSignInError("");
+    
+    // Validation
+    if (!signInEmail.trim()) {
+      setSignInError("Email is required");
+      return;
+    }
+    if (!validateEmail(signInEmail)) {
+      setSignInError("Please enter a valid email address");
+      return;
+    }
+    if (!signInPassword) {
+      setSignInError("Password is required");
+      return;
+    }
+    if (!validatePassword(signInPassword)) {
+      setSignInError("Password must be at least 6 characters");
+      return;
+    }
+
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return toast.error(error.message);
-      toast.success("Signed in");
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email: signInEmail.trim(), 
+        password: signInPassword 
+      });
+      if (error) {
+        setSignInError(error.message || "Sign in failed");
+        toast.error(error.message || "Sign in failed");
+        return;
+      }
+      toast.success("Signed in successfully!");
       navigate({ to: "/admin" });
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Sign in failed";
+      setSignInError(errorMsg);
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Sign in failed");
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -60,21 +109,71 @@ function AuthPage() {
 
   const signUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSignUpError("");
+    
+    // Validation
+    if (!signUpName.trim()) {
+      setSignUpError("Full name is required");
+      return;
+    }
+    if (signUpName.trim().length < 2) {
+      setSignUpError("Full name must be at least 2 characters");
+      return;
+    }
+    if (!signUpEmail.trim()) {
+      setSignUpError("Email is required");
+      return;
+    }
+    if (!validateEmail(signUpEmail)) {
+      setSignUpError("Please enter a valid email address");
+      return;
+    }
+    if (!signUpPassword) {
+      setSignUpError("Password is required");
+      return;
+    }
+    if (!validatePassword(signUpPassword)) {
+      setSignUpError("Password must be at least 6 characters");
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: name }, emailRedirectTo: window.location.origin + "/admin" },
+        email: signUpEmail.trim(),
+        password: signUpPassword,
+        options: { 
+          data: { full_name: signUpName.trim() }, 
+          emailRedirectTo: window.location.origin + "/admin" 
+        },
       });
-      if (error) return toast.error(error.message);
-      toast.success("Account created — check your email if confirmation is required.");
+      if (error) {
+        setSignUpError(error.message || "Sign up failed");
+        toast.error(error.message || "Sign up failed");
+        return;
+      }
+      toast.success("Account created! Check your email to confirm your account.");
+      // Reset form
+      setSignUpName("");
+      setSignUpEmail("");
+      setSignUpPassword("");
+      // Switch back to sign in tab
+      setActiveTab("signin");
     } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : "Sign up failed";
+      setSignUpError(errorMsg);
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Sign up failed");
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    // Clear errors when switching tabs
+    setSignInError("");
+    setSignUpError("");
   };
 
   return (
@@ -87,7 +186,7 @@ function AuthPage() {
           Academia<span className="text-primary">HQ</span>
         </Link>
         <div className="mt-8 rounded-2xl border border-border/60 bg-card p-6 shadow-card">
-          <Tabs defaultValue="signin">
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList className="grid grid-cols-2 w-full">
               <TabsTrigger value="signin">Sign in</TabsTrigger>
               <TabsTrigger value="signup">Create account</TabsTrigger>
@@ -99,9 +198,41 @@ function AuthPage() {
               </Button>
               <Divider />
               <form onSubmit={signIn} className="space-y-3">
-                <Field label="Email"><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
-                <Field label="Password"><Input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
-                <Button type="submit" className="w-full" disabled={loading}>Sign in</Button>
+                {signInError && (
+                  <div className="p-2 bg-destructive/10 border border-destructive/30 rounded text-sm text-destructive">
+                    {signInError}
+                  </div>
+                )}
+                <Field label="Email">
+                  <Input 
+                    type="email" 
+                    required 
+                    value={signInEmail} 
+                    onChange={(e) => {
+                      setSignInEmail(e.target.value);
+                      setSignInError("");
+                    }} 
+                    placeholder="you@example.com"
+                    disabled={loading}
+                  />
+                </Field>
+                <Field label="Password">
+                  <Input 
+                    type="password" 
+                    required 
+                    minLength={6} 
+                    value={signInPassword} 
+                    onChange={(e) => {
+                      setSignInPassword(e.target.value);
+                      setSignInError("");
+                    }} 
+                    placeholder="••••••"
+                    disabled={loading}
+                  />
+                </Field>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Signing in..." : "Sign in"}
+                </Button>
               </form>
             </TabsContent>
 
@@ -111,10 +242,54 @@ function AuthPage() {
               </Button>
               <Divider />
               <form onSubmit={signUp} className="space-y-3">
-                <Field label="Full name"><Input required value={name} onChange={(e) => setName(e.target.value)} /></Field>
-                <Field label="Email"><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
-                <Field label="Password"><Input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} /></Field>
-                <Button type="submit" className="w-full" disabled={loading}>Create account</Button>
+                {signUpError && (
+                  <div className="p-2 bg-destructive/10 border border-destructive/30 rounded text-sm text-destructive">
+                    {signUpError}
+                  </div>
+                )}
+                <Field label="Full name">
+                  <Input 
+                    type="text"
+                    required 
+                    value={signUpName} 
+                    onChange={(e) => {
+                      setSignUpName(e.target.value);
+                      setSignUpError("");
+                    }} 
+                    placeholder="John Doe"
+                    disabled={loading}
+                  />
+                </Field>
+                <Field label="Email">
+                  <Input 
+                    type="email" 
+                    required 
+                    value={signUpEmail} 
+                    onChange={(e) => {
+                      setSignUpEmail(e.target.value);
+                      setSignUpError("");
+                    }} 
+                    placeholder="you@example.com"
+                    disabled={loading}
+                  />
+                </Field>
+                <Field label="Password">
+                  <Input 
+                    type="password" 
+                    required 
+                    minLength={6} 
+                    value={signUpPassword} 
+                    onChange={(e) => {
+                      setSignUpPassword(e.target.value);
+                      setSignUpError("");
+                    }} 
+                    placeholder="••••••"
+                    disabled={loading}
+                  />
+                </Field>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Creating account..." : "Create account"}
+                </Button>
               </form>
               <p className="text-xs text-muted-foreground">By continuing you agree to our Terms and Privacy Policy.</p>
             </TabsContent>
@@ -133,6 +308,7 @@ function Divider() {
     </div>
   );
 }
+
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="space-y-1.5"><Label>{label}</Label>{children}</div>;
 }
