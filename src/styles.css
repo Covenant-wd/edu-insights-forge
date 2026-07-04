@@ -175,4 +175,12 @@
     border-radius: var(--radius-sm);
     font-size: 0.95em;
   }
+
+  & p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--color-muted-foreground);
+    pointer-events: none;
+  }
 }
