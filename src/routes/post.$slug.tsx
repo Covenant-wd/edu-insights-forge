@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Clock, Calendar, Share2 } from "lucide-react";
+import sanitizeHtml from "sanitize-html";
 import { getPostBySlug } from "@/lib/posts.functions";
 import { PostCard } from "@/components/post-card";
 import { AdSlot } from "@/components/ad-slot";
@@ -163,11 +164,36 @@ function PostPage() {
   );
 }
 
+const SANITIZE_OPTS: sanitizeHtml.IOptions = {
+  allowedTags: [
+    "p", "br", "strong", "em", "u", "s", "code", "pre",
+    "h2", "h3", "h4", "ul", "ol", "li", "blockquote", "a", "img",
+  ],
+  allowedAttributes: {
+    a: ["href", "target", "rel"],
+    img: ["src", "alt"],
+    "*": ["style", "class"],
+  },
+  allowedStyles: {
+    "*": { "text-align": [/^left$|^center$|^right$|^justify$/] },
+  },
+  allowedSchemes: ["http", "https", "mailto"],
+};
+
 /**
- * Very small markdown-lite renderer for post content stored as plain text.
- * Escapes HTML then converts headings, paragraphs, and simple emphasis.
+ * Post content is rich-text HTML produced by the admin editor. Sanitize it
+ * before injecting. Posts saved before the rich-text editor shipped still
+ * hold plain markdown-lite text (no tags) — fall back to the small parser
+ * below for those.
  */
 function renderContent(raw: string): string {
+  if (/<[a-z][\s\S]*>/i.test(raw)) {
+    return sanitizeHtml(raw, SANITIZE_OPTS);
+  }
+  return renderMarkdownLite(raw);
+}
+
+function renderMarkdownLite(raw: string): string {
   const esc = raw
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
