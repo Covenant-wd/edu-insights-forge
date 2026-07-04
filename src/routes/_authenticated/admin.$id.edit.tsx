@@ -4,7 +4,7 @@ import { adminGetPost } from "@/lib/admin-posts.functions";
 import PostEditor from "@/components/post-editor";
 
 export const Route = createFileRoute("/_authenticated/admin/$id/edit")({
-  head: () => ({ meta: [{ title: "Edit post — Academia HQ" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Academia HQ Blog" }, { name: "robots", content: "noindex" }] }),
   component: EditPost,
 });
 

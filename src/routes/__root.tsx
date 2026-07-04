@@ -65,7 +65,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Academia HQ Blog — Education News, Exams & Scholarships" },
+      { title: "Academia HQ Blog" },
       { name: "description", content: "Trusted education news for students, teachers and parents in Nigeria and Africa. WAEC, NECO, JAMB updates, scholarships, teacher resources, ed-tech and career guidance." },
       { name: "author", content: "Academia HQ" },
       { name: "theme-color", content: "#2563EB" },

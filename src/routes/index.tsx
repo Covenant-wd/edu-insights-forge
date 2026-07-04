@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "Academia HQ Blog — Education News, Exams & Scholarships in Nigeria" },
+      { title: "Academia HQ Blog" },
       { name: "description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
     ],
     links: [{ rel: "canonical", href: "/" }],
