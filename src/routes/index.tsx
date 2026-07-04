@@ -1,12 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight, Flame, Mail, Sparkles, TrendingUp } from "lucide-react";
+import { Mail, Sparkles, TrendingUp } from "lucide-react";
 import { listHomePosts, listCategories } from "@/lib/posts.functions";
 import { PostCard } from "@/components/post-card";
 import { AdSlot } from "@/components/ad-slot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import heroImg from "@/assets/hero-students.jpg";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -36,131 +35,91 @@ function Home() {
   const { data } = useSuspenseQuery(homeQuery);
   const { data: cats } = useSuspenseQuery(catsQuery);
 
-  const featured = data.featured[0] ?? data.latest[0];
-  const featuredRest = (data.featured.length > 0 ? data.featured.slice(1) : data.latest.slice(1)).slice(0, 4);
+  const featured = (data.featured.length > 0 ? data.featured : data.latest).slice(0, 3);
+  const shownIds = new Set(featured.map((p) => p.id));
+  const latest = data.latest.filter((p) => !shownIds.has(p.id));
 
   return (
-    <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border/60">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
-        <div className="container-blog py-10 md:py-14 grid gap-8 lg:grid-cols-[1.4fr_1fr] items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
-              <Sparkles className="h-3.5 w-3.5" /> Academia HQ Insights
-            </div>
-            <h1 className="mt-4 text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.05]">
-              Education news that <span className="text-primary">moves</span> Africa forward.
-            </h1>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground">
-              Exam updates, scholarships, teacher resources and career guidance — trusted by students, parents and schools across Nigeria.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/category/$slug" params={{ slug: "education-news" }}>
-                <Button size="lg">Read latest news <ArrowRight className="ml-1 h-4 w-4" /></Button>
-              </Link>
-              <Link to="/category/$slug" params={{ slug: "scholarships" }}>
-                <Button size="lg" variant="outline">Explore scholarships</Button>
-              </Link>
-            </div>
-          </div>
-          <div className="relative">
-            <img
-              src={heroImg}
-              alt="Students learning together"
-              width={1600}
-              height={1024}
-              fetchPriority="high"
-              className="rounded-2xl shadow-hero aspect-[4/3] object-cover w-full"
-            />
-            <div className="absolute -bottom-4 -left-4 hidden md:block rounded-xl bg-background border border-border/60 shadow-card p-4 max-w-[220px]">
-              <div className="text-xs font-semibold uppercase tracking-wider text-primary">Trending</div>
-              <div className="mt-1 text-sm font-semibold">2026 JAMB registration guide</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="container-blog mt-10">
-        <AdSlot format="leaderboard" className="hidden md:flex" />
-        <AdSlot format="mobile-banner" className="md:hidden" />
+    <div className="container-blog py-10">
+      {/* Simple page intro — no hero imagery */}
+      <div className="border-b border-border/60 pb-6">
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Academia HQ Blog</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">Education news, exam updates, scholarships and career guidance for Nigeria and Africa.</p>
       </div>
 
-      {/* Featured */}
-      {featured && (
-        <section className="container-blog py-12">
-          <SectionHeader icon={<Flame className="h-5 w-5" />} title="Editor's Picks" subtitle="Handpicked stories from our newsroom" />
-          <div className="mt-6 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-            <PostCard post={featured} variant="hero" />
-            <div className="grid gap-4">
-              {featuredRest.map((p) => (
-                <div key={p.id} className="p-4 rounded-xl border border-border/60 bg-card hover:border-primary/40 transition">
-                  <PostCard post={p} variant="compact" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <AdSlot format="leaderboard" className="hidden md:flex mt-8" />
+      <AdSlot format="mobile-banner" className="md:hidden mt-8" />
 
-      {/* Trending + sidebar with ads */}
-      <section className="container-blog py-6 grid gap-10 lg:grid-cols-[2.2fr_1fr]">
-        <div>
-          <SectionHeader icon={<TrendingUp className="h-5 w-5" />} title="Latest articles" subtitle="Fresh from Academia HQ" />
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {data.latest.slice(0, 8).map((p) => <PostCard key={p.id} post={p} />)}
-          </div>
-          {data.latest.length === 0 && <EmptyState />}
+      <div className="mt-10 grid gap-10 lg:grid-cols-[2.2fr_1fr]">
+        <div className="space-y-12">
+          {/* Featured */}
+          {featured.length > 0 && (
+            <section>
+              <SectionHeader icon={<Sparkles className="h-4 w-4" />} title="Featured" />
+              <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {featured.map((p) => <PostCard key={p.id} post={p} />)}
+              </div>
+            </section>
+          )}
+
+          {/* Latest */}
+          <section>
+            <SectionHeader title="Latest posts" />
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {latest.slice(0, 9).map((p) => <PostCard key={p.id} post={p} />)}
+            </div>
+            {data.latest.length === 0 && <EmptyState />}
+          </section>
         </div>
+
         <aside className="space-y-8">
-          <AdSlot format="large-rectangle" />
-          <div className="rounded-xl border border-border/60 bg-card p-5">
-            <div className="text-xs font-semibold uppercase tracking-wider text-primary">Most read</div>
-            <div className="mt-4 space-y-4">
+          {/* Trending */}
+          <div className="rounded-xl border border-border/60 bg-card">
+            <div className="flex items-center gap-2 px-5 pt-5 text-xs font-bold uppercase tracking-wider text-primary">
+              <TrendingUp className="h-3.5 w-3.5" /> Trending
+            </div>
+            <div className="mt-3 divide-y divide-border/60">
               {data.trending.slice(0, 5).map((p, i) => (
-                <div key={p.id} className="flex gap-3 items-start">
-                  <span className="grid h-7 w-7 flex-shrink-0 place-items-center rounded-md bg-primary/10 text-primary text-sm font-bold">{i + 1}</span>
-                  <PostCard post={p} variant="compact" />
-                </div>
+                <Link key={p.id} to="/post/$slug" params={{ slug: p.slug }} className="group flex gap-3 items-start px-5 py-3">
+                  <span className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-md bg-primary/10 text-primary text-xs font-bold">{i + 1}</span>
+                  <span className="text-sm font-semibold leading-snug group-hover:text-primary transition line-clamp-2">{p.title}</span>
+                </Link>
               ))}
-              {data.trending.length === 0 && <p className="text-sm text-muted-foreground">Popular stories will appear here.</p>}
+              {data.trending.length === 0 && <p className="px-5 py-4 text-sm text-muted-foreground">Popular stories will appear here.</p>}
+            </div>
+            <div className="h-2" />
+          </div>
+
+          <AdSlot format="large-rectangle" />
+          <NewsletterCard />
+
+          {/* Categories */}
+          <div className="rounded-xl border border-border/60 bg-card p-5">
+            <div className="text-xs font-bold uppercase tracking-wider text-primary">Categories</div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {cats.slice(0, 10).map((c) => (
+                <Link
+                  key={c.id}
+                  to="/category/$slug"
+                  params={{ slug: c.slug }}
+                  className="rounded-full border border-border/60 px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary transition"
+                >
+                  {c.name}
+                </Link>
+              ))}
             </div>
           </div>
-          <NewsletterCard />
-          <AdSlot format="rectangle" />
         </aside>
-      </section>
-
-      {/* Popular categories */}
-      <section className="container-blog py-14">
-        <SectionHeader title="Explore by topic" subtitle="From WAEC to Career Development" />
-        <div className="mt-6 grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {cats.slice(0, 12).map((c) => (
-            <Link
-              key={c.id}
-              to="/category/$slug"
-              params={{ slug: c.slug }}
-              className="rounded-lg border border-border/60 bg-card px-4 py-3 text-center text-sm font-semibold hover:border-primary hover:text-primary transition"
-            >
-              {c.name}
-            </Link>
-          ))}
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
 
-function SectionHeader({ icon, title, subtitle }: { icon?: React.ReactNode; title: string; subtitle?: string }) {
+function SectionHeader({ icon, title }: { icon?: React.ReactNode; title: string }) {
   return (
-    <div className="flex items-end justify-between gap-4 border-b border-border/60 pb-4">
-      <div>
-        <div className="inline-flex items-center gap-2 text-primary">
-          {icon}
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">{title}</h2>
-        </div>
-        {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
-      </div>
+    <div className="flex items-center gap-2 border-b border-border/60 pb-3">
+      {icon && <span className="text-primary">{icon}</span>}
+      <h2 className="text-lg font-bold tracking-tight">{title}</h2>
     </div>
   );
 }
