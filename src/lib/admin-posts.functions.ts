@@ -15,12 +15,16 @@ const postSchema = z.object({
 });
 
 async function assertEditor(supabase: any, userId: string) {
-  const [{ data: admin }, { data: editor }] = await Promise.all([
-    supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
-    supabase.rpc("has_role", { _user_id: userId, _role: "editor" }),
-  ]);
-  if (!admin && !editor) throw new Error("Forbidden: editor role required");
-  return { isAdmin: !!admin };
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId);
+  if (error) throw new Error(error.message);
+  const roles = (data ?? []).map((r: any) => r.role as string);
+  const isAdmin = roles.includes("admin");
+  const isEditor = isAdmin || roles.includes("editor");
+  if (!isEditor) throw new Error("Forbidden: editor role required");
+  return { isAdmin };
 }
 
 export const adminListPosts = createServerFn({ method: "GET" })
