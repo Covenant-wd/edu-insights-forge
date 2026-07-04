@@ -11,7 +11,7 @@ export const Route = createFileRoute("/search")({
   validateSearch: search,
   head: () => ({
     meta: [
-      { title: "Search — Academia HQ Blog" },
+      { title: "Academia HQ Blog" },
       { name: "description", content: "Search Academia HQ articles on WAEC, JAMB, scholarships and more." },
       { name: "robots", content: "noindex" },
     ],

@@ -24,14 +24,14 @@ export const Route = createFileRoute("/post/$slug")({
     const { post } = loaderData;
     return {
       meta: [
-        { title: `${post.title} — Academia HQ` },
+        { title: "Academia HQ Blog" },
         { name: "description", content: post.excerpt ?? post.title },
-        { property: "og:title", content: post.title },
+        { property: "og:title", content: "Academia HQ Blog" },
         { property: "og:description", content: post.excerpt ?? post.title },
         { property: "og:type", content: "article" },
         { property: "og:url", content: `/post/${params.slug}` },
         ...(post.cover_image ? [{ property: "og:image", content: post.cover_image }] : []),
-        { name: "twitter:title", content: post.title },
+        { name: "twitter:title", content: "Academia HQ Blog" },
         { name: "twitter:description", content: post.excerpt ?? post.title },
       ],
       links: [{ rel: "canonical", href: `/post/${params.slug}` }],

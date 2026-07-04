@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Academia HQ" },
+      { title: "Academia HQ Blog" },
       { name: "description", content: "Sign in to Academia HQ to manage your articles and dashboard." },
       { name: "robots", content: "noindex" },
     ],

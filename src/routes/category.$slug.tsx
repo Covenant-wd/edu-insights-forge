@@ -20,9 +20,9 @@ export const Route = createFileRoute("/category/$slug")({
     const name = loaderData?.category?.name ?? "Category";
     return {
       meta: [
-        { title: `${name} — Academia HQ Blog` },
+        { title: "Academia HQ Blog" },
         { name: "description", content: `${name} news, updates and resources from Academia HQ.` },
-        { property: "og:title", content: `${name} — Academia HQ Blog` },
+        { property: "og:title", content: "Academia HQ Blog" },
         { property: "og:url", content: `/category/${params.slug}` },
       ],
       links: [{ rel: "canonical", href: `/category/${params.slug}` }],
