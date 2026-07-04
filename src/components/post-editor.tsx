@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RichTextEditor } from "@/components/rich-text-editor";
 
 type Initial = Partial<{
   id: string;
@@ -44,6 +45,11 @@ export default function PostEditor({ initial = {}, onSaved }: { initial?: Initia
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
+    const isContentEmpty = values.content.replace(/<[^>]*>/g, "").trim().length === 0;
+    if (isContentEmpty) {
+      toast.error("Content can't be empty");
+      return;
+    }
     setSaving(true);
     try {
       await adminUpsertPost({
@@ -111,8 +117,10 @@ export default function PostEditor({ initial = {}, onSaved }: { initial?: Initia
         </div>
 
         <div>
-          <Label>Content (Markdown-lite: use ##, ###, - lists, **bold**, *italic*, [link](url), &gt; quote)</Label>
-          <Textarea required value={values.content} onChange={(e) => set("content", e.target.value)} rows={18} className="mt-1.5 font-mono text-sm" />
+          <Label>Content</Label>
+          <div className="mt-1.5">
+            <RichTextEditor value={values.content} onChange={(html) => set("content", html)} />
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
