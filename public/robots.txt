@@ -3,3 +3,6 @@ Allow: /
 Disallow: /auth
 Disallow: /admin
 Disallow: /search
+
+Sitemap: https://blog.academiahq.pro/sitemap.xml
+
