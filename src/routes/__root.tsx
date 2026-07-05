@@ -120,7 +120,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           logo: absoluteUrl("/favicon.ico"),
         }),
       },
-      ...MONETAG_SITE_SCRIPTS,
     ],
   }),
   shellComponent: RootShell,
