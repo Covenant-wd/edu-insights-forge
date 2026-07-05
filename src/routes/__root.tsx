@@ -39,11 +39,16 @@ import { supabase } from "@/integrations/supabase/client";
  */
 const MONETAG_VERIFICATION = "e8b7b36d84485b5338a6302fb883662a";
 const MONETAG_SITE_SCRIPTS: Record<string, unknown>[] = [
+  // Push Notifications
   {
-    src: "https://quge5.com/88/tag.min.js",
-    "data-zone": "256448",
-    async: true,
+    src: "https://5gvci.com/act/files/tag.min.js?z=11241488",
     "data-cfasync": "false",
+    async: true,
+  },
+  // Vignette Banner
+  {
+    children:
+      "(function(s){s.dataset.zone='11241493',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))",
   },
 ];
 
