@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminNewRouteImport } from './routes/_authenticated/admin.new'
 import { Route as AuthenticatedAdminIdEditRouteImport } from './routes/_authenticated/admin.$id.edit'
 
@@ -65,6 +66,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminNewRoute = AuthenticatedAdminNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/new': typeof AuthenticatedAdminNewRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
 }
 export interface FileRoutesByTo {
@@ -95,10 +102,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/new': typeof AuthenticatedAdminNewRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
 }
 export interface FileRoutesById {
@@ -113,6 +120,7 @@ export interface FileRoutesById {
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/_authenticated/admin/new': typeof AuthenticatedAdminNewRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
 }
 export interface FileRouteTypes {
@@ -127,6 +135,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/post/$slug'
     | '/admin/new'
+    | '/admin/'
     | '/admin/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -135,10 +144,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/search'
     | '/sitemap.xml'
-    | '/admin'
     | '/category/$slug'
     | '/post/$slug'
     | '/admin/new'
+    | '/admin'
     | '/admin/$id/edit'
   id:
     | '__root__'
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/post/$slug'
     | '/_authenticated/admin/new'
+    | '/_authenticated/admin/'
     | '/_authenticated/admin/$id/edit'
   fileRoutesById: FileRoutesById
 }
@@ -231,6 +241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/new': {
       id: '/_authenticated/admin/new'
       path: '/new'
@@ -250,11 +267,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminNewRoute: typeof AuthenticatedAdminNewRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminIdEditRoute: typeof AuthenticatedAdminIdEditRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminNewRoute: AuthenticatedAdminNewRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminIdEditRoute: AuthenticatedAdminIdEditRoute,
 }
 
