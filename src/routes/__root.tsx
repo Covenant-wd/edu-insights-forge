@@ -38,7 +38,14 @@ import { supabase } from "@/integrations/supabase/client";
  *    Leave the array empty until you've created zones for these formats.
  */
 const MONETAG_VERIFICATION = "e8b7b36d84485b5338a6302fb883662a";
-const MONETAG_SITE_SCRIPTS: Record<string, unknown>[] = [];
+const MONETAG_SITE_SCRIPTS: Record<string, unknown>[] = [
+  {
+    src: "https://quge5.com/88/tag.min.js",
+    "data-zone": "256448",
+    async: true,
+    "data-cfasync": "false",
+  },
+];
 
 function NotFoundComponent() {
   return (
