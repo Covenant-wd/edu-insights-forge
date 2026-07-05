@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { RawAdMarkup } from "@/components/raw-ad-markup";
 
 type Format = "leaderboard" | "rectangle" | "large-rectangle" | "mobile-banner" | "sidebar";
 
@@ -10,9 +11,40 @@ const SIZES: Record<Format, { w: number; h: number; label: string }> = {
   sidebar: { w: 300, h: 600, label: "300 × 600" },
 };
 
-/** Placeholder ad slot ready for AdSense / Monetag / Adsterra. Replace inner content with the network's tag. */
+/**
+ * MONETAG SETUP
+ * 1. In your Monetag dashboard: Sites → your site → Add zone → "Banner".
+ * 2. Create one zone per placement below (e.g. "Homepage leaderboard",
+ *    "Sidebar rectangle") and click "Get tag" on each.
+ * 3. Paste each zone's raw code (HTML + <script>) as the string value here,
+ *    matching the size you picked in Monetag to the `format` key below.
+ *
+ * Leave a slot as "" to keep showing the dashed dev placeholder for it.
+ */
+const MONETAG_BANNER_CODE: Partial<Record<Format, string>> = {
+  leaderboard: "",
+  rectangle: "",
+  "large-rectangle": "",
+  "mobile-banner": "",
+  sidebar: "",
+};
+
 export function AdSlot({ format = "rectangle", className, sticky }: { format?: Format; className?: string; sticky?: boolean }) {
   const s = SIZES[format];
+  const code = MONETAG_BANNER_CODE[format];
+
+  if (code) {
+    return (
+      <div
+        className={cn("mx-auto overflow-hidden", sticky && "sticky top-24", className)}
+        style={{ maxWidth: s.w }}
+        data-ad-slot={format}
+      >
+        <RawAdMarkup html={code} />
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
