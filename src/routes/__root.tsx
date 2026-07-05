@@ -23,6 +23,23 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * MONETAG — site verification + site-wide ad formats
+ *
+ * 1. Sites → Add site in your Monetag dashboard, choose the "verification
+ *    meta tag" option, and copy the `content` value it gives you into
+ *    MONETAG_VERIFICATION below (leave "" until you have it).
+ * 2. Formats like Interstitial, Vignette Banner, Popunder (Onclick) and Push
+ *    Notifications aren't tied to one placement on the page — create a zone
+ *    for each in the dashboard, click "Get tag", and describe the <script>
+ *    it gives you as an entry in MONETAG_SITE_SCRIPTS below:
+ *      - external script:  { src: "//example.com/tag.js", async: true, "data-cfasync": "false" }
+ *      - inline script:    { children: "window.foo = 123;" }
+ *    Leave the array empty until you've created zones for these formats.
+ */
+const MONETAG_VERIFICATION = "e8b7b36d84485b5338a6302fb883662a";
+const MONETAG_SITE_SCRIPTS: Record<string, unknown>[] = [];
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4">
@@ -79,6 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UCEUWB4fREROdv3cHjTf37JARfp2/social-images/social-1783150740275-Academia_HQ.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UCEUWB4fREROdv3cHjTf37JARfp2/social-images/social-1783150740275-Academia_HQ.webp" },
+      ...(MONETAG_VERIFICATION ? [{ name: "monetag", content: MONETAG_VERIFICATION }] : []),
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -99,6 +117,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           },
         }),
       },
+      ...MONETAG_SITE_SCRIPTS,
     ],
   }),
   shellComponent: RootShell,
