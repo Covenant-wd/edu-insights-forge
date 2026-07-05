@@ -24,34 +24,12 @@ import { SiteFooter } from "@/components/site-footer";
 import { supabase } from "@/integrations/supabase/client";
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, absoluteUrl } from "@/lib/site";
 
-/**
- * MONETAG — site verification + site-wide ad formats
- *
- * 1. Sites → Add site in your Monetag dashboard, choose the "verification
- *    meta tag" option, and copy the `content` value it gives you into
- *    MONETAG_VERIFICATION below (leave "" until you have it).
- * 2. Formats like Interstitial, Vignette Banner, Popunder (Onclick) and Push
- *    Notifications aren't tied to one placement on the page — create a zone
- *    for each in the dashboard, click "Get tag", and describe the <script>
- *    it gives you as an entry in MONETAG_SITE_SCRIPTS below:
- *      - external script:  { src: "//example.com/tag.js", async: true, "data-cfasync": "false" }
- *      - inline script:    { children: "window.foo = 123;" }
- *    Leave the array empty until you've created zones for these formats.
- */
+import { MonetagSiteScripts } from "@/components/monetag-site-scripts";
+
+// Monetag site-verification meta tag (from the Monetag dashboard). Site-wide
+// ad scripts (Multitag, Popunder, Push, In-Page Push, Vignette) are now
+// managed by admins at /admin/ads and injected by <MonetagSiteScripts />.
 const MONETAG_VERIFICATION = "e8b7b36d84485b5338a6302fb883662a";
-const MONETAG_SITE_SCRIPTS: Record<string, unknown>[] = [
-  // Push Notifications
-  {
-    src: "https://5gvci.com/act/files/tag.min.js?z=11241488",
-    "data-cfasync": "false",
-    async: true,
-  },
-  // Vignette Banner
-  {
-    children:
-      "(function(s){s.dataset.zone='11241493',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))",
-  },
-];
 
 function NotFoundComponent() {
   return (
