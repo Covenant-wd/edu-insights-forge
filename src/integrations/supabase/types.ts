@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_snippets: {
+        Row: {
+          code: string
+          created_at: string
+          enabled: boolean
+          id: string
+          name: string
+          updated_at: string
+          zone_key: string
+        }
+        Insert: {
+          code?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name: string
+          updated_at?: string
+          zone_key: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name?: string
+          updated_at?: string
+          zone_key?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
