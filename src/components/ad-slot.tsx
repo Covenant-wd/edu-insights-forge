@@ -1,37 +1,33 @@
+import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { RawAdMarkup } from "@/components/raw-ad-markup";
+import { listEnabledSnippets } from "@/lib/ads.functions";
 
 type Format = "leaderboard" | "rectangle" | "large-rectangle" | "mobile-banner" | "sidebar";
 
-const SIZES: Record<Format, { w: number; h: number; label: string }> = {
-  leaderboard: { w: 728, h: 90, label: "728 × 90" },
-  rectangle: { w: 300, h: 250, label: "300 × 250" },
-  "large-rectangle": { w: 336, h: 280, label: "336 × 280" },
-  "mobile-banner": { w: 320, h: 100, label: "320 × 100" },
-  sidebar: { w: 300, h: 600, label: "300 × 600" },
+const SIZES: Record<Format, { w: number; h: number; label: string; zoneKey: string }> = {
+  leaderboard: { w: 728, h: 90, label: "728 × 90", zoneKey: "banner_leaderboard" },
+  rectangle: { w: 300, h: 250, label: "300 × 250", zoneKey: "banner_rectangle" },
+  "large-rectangle": { w: 336, h: 280, label: "336 × 280", zoneKey: "banner_large_rectangle" },
+  "mobile-banner": { w: 320, h: 100, label: "320 × 100", zoneKey: "banner_mobile_banner" },
+  sidebar: { w: 300, h: 600, label: "300 × 600", zoneKey: "banner_sidebar" },
 };
 
 /**
- * MONETAG SETUP
- * 1. In your Monetag dashboard: Sites → your site → Add zone → "Banner".
- * 2. Create one zone per placement below (e.g. "Homepage leaderboard",
- *    "Sidebar rectangle") and click "Get tag" on each.
- * 3. Paste each zone's raw code (HTML + <script>) as the string value here,
- *    matching the size you picked in Monetag to the `format` key below.
- *
- * Leave a slot as "" to keep showing the dashed dev placeholder for it.
+ * Renders a Monetag banner placement. The actual snippet code is fetched
+ * from the ad_snippets table (managed at /admin/ads); this component just
+ * looks up the code by zone_key based on the format prop. When no code is
+ * configured, a dashed dev placeholder is shown instead.
  */
-const MONETAG_BANNER_CODE: Partial<Record<Format, string>> = {
-  leaderboard: "",
-  rectangle: "",
-  "large-rectangle": "",
-  "mobile-banner": "",
-  sidebar: "",
-};
-
 export function AdSlot({ format = "rectangle", className, sticky }: { format?: Format; className?: string; sticky?: boolean }) {
   const s = SIZES[format];
-  const code = MONETAG_BANNER_CODE[format];
+  const { data } = useQuery({
+    queryKey: ["ad-snippets-enabled"],
+    queryFn: () => listEnabledSnippets(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const code = data?.find((r) => r.zone_key === s.zoneKey)?.code?.trim();
 
   if (code) {
     return (
