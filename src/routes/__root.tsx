@@ -22,6 +22,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { supabase } from "@/integrations/supabase/client";
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, absoluteUrl } from "@/lib/site";
 
 /**
  * MONETAG — site verification + site-wide ad formats
@@ -94,20 +95,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Academia HQ Blog" },
+      { title: SITE_NAME },
       { name: "description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
       { name: "author", content: "Academia HQ" },
       { name: "theme-color", content: "#2563EB" },
-      { property: "og:title", content: "Academia HQ Blog" },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: SITE_NAME },
       { property: "og:description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Academia HQ Blog" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:url", content: SITE_URL },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@AcademiaHQ" },
-      { name: "twitter:title", content: "Academia HQ Blog" },
+      { name: "twitter:title", content: SITE_NAME },
       { name: "twitter:description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UCEUWB4fREROdv3cHjTf37JARfp2/social-images/social-1783150740275-Academia_HQ.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UCEUWB4fREROdv3cHjTf37JARfp2/social-images/social-1783150740275-Academia_HQ.webp" },
+      { property: "og:image", content: DEFAULT_OG_IMAGE },
+      { name: "twitter:image", content: DEFAULT_OG_IMAGE },
       ...(MONETAG_VERIFICATION ? [{ name: "monetag", content: MONETAG_VERIFICATION }] : []),
     ],
     links: [
@@ -120,13 +123,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Academia HQ Blog",
-          url: "https://blog.academiahq.pro",
+          name: SITE_NAME,
+          url: SITE_URL,
           potentialAction: {
             "@type": "SearchAction",
-            target: "https://blog.academiahq.pro/search?q={search_term_string}",
+            target: `${SITE_URL}/search?q={search_term_string}`,
             "query-input": "required name=search_term_string",
           },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Academia HQ",
+          url: SITE_URL,
+          logo: absoluteUrl("/favicon.ico"),
         }),
       },
       ...MONETAG_SITE_SCRIPTS,

@@ -5,6 +5,7 @@ import sanitizeHtml from "sanitize-html";
 import { getPostBySlug } from "@/lib/posts.functions";
 import { PostCard } from "@/components/post-card";
 import { AdSlot } from "@/components/ad-slot";
+import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
 const postQuery = (slug: string) =>
   queryOptions({
@@ -23,31 +24,36 @@ export const Route = createFileRoute("/post/$slug")({
       return { meta: [{ title: "Article not found" }, { name: "robots", content: "noindex" }] };
     }
     const { post } = loaderData;
+    const url = absoluteUrl(`/post/${params.slug}`);
     return {
       meta: [
-        { title: "Academia HQ Blog" },
+        { title: `${post.title} | ${SITE_NAME}` },
         { name: "description", content: post.excerpt ?? post.title },
-        { property: "og:title", content: "Academia HQ Blog" },
+        { property: "og:title", content: post.title },
         { property: "og:description", content: post.excerpt ?? post.title },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/post/${params.slug}` },
+        { property: "og:url", content: url },
+        ...(post.category ? [{ property: "article:section", content: post.category.name }] : []),
+        ...(post.published_at ? [{ property: "article:published_time", content: post.published_at }] : []),
+        ...(post.updated_at ? [{ property: "article:modified_time", content: post.updated_at }] : []),
         ...(post.cover_image ? [{ property: "og:image", content: post.cover_image }] : []),
-        { name: "twitter:title", content: "Academia HQ Blog" },
+        { name: "twitter:title", content: post.title },
         { name: "twitter:description", content: post.excerpt ?? post.title },
       ],
-      links: [{ rel: "canonical", href: `/post/${params.slug}` }],
+      links: [{ rel: "canonical", href: url }],
       scripts: [{
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Article",
+          mainEntityOfPage: { "@type": "WebPage", "@id": url },
           headline: post.title,
           description: post.excerpt,
           image: post.cover_image ? [post.cover_image] : undefined,
           datePublished: post.published_at,
           dateModified: post.updated_at,
           author: { "@type": "Person", name: post.author?.display_name ?? "Academia HQ" },
-          publisher: { "@type": "Organization", name: "Academia HQ", logo: { "@type": "ImageObject", url: "/favicon.ico" } },
+          publisher: { "@type": "Organization", name: "Academia HQ", logo: { "@type": "ImageObject", url: absoluteUrl("/favicon.ico") } },
         }),
       }],
     };

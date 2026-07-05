@@ -3,6 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listPostsByCategory } from "@/lib/posts.functions";
 import { PostCard } from "@/components/post-card";
 import { AdSlot } from "@/components/ad-slot";
+import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
 const categoryQuery = (slug: string) =>
   queryOptions({
@@ -18,14 +19,15 @@ export const Route = createFileRoute("/category/$slug")({
   },
   head: ({ loaderData, params }) => {
     const name = loaderData?.category?.name ?? "Category";
+    const url = absoluteUrl(`/category/${params.slug}`);
     return {
       meta: [
-        { title: "Academia HQ Blog" },
+        { title: `${name} | ${SITE_NAME}` },
         { name: "description", content: `${name} news, updates and resources from Academia HQ.` },
-        { property: "og:title", content: "Academia HQ Blog" },
-        { property: "og:url", content: `/category/${params.slug}` },
+        { property: "og:title", content: `${name} | ${SITE_NAME}` },
+        { property: "og:url", content: url },
       ],
-      links: [{ rel: "canonical", href: `/category/${params.slug}` }],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: CategoryPage,

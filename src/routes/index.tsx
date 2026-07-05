@@ -6,6 +6,7 @@ import { PostCard } from "@/components/post-card";
 import { AdSlot } from "@/components/ad-slot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SITE_URL } from "@/lib/site";
 
 const homeQuery = queryOptions({
   queryKey: ["home"],
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/")({
       { title: "Academia HQ Blog" },
       { name: "description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: SITE_URL }],
   }),
   component: Home,
 });

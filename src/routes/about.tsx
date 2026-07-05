@@ -6,9 +6,9 @@ import { AdSlot } from "@/components/ad-slot";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Academia HQ Blog" },
+      { title: "About | Academia HQ Blog" },
       { name: "description", content: "Welcome to Academia HQ Blog. Learn about Academia HQ, a CBT and School Management System built for schools, students and teachers across Nigeria and Africa." },
-      { property: "og:title", content: "Academia HQ Blog" },
+      { property: "og:title", content: "About | Academia HQ Blog" },
       { property: "og:description", content: "Welcome to Academia HQ Blog. Learn about Academia HQ, a CBT and School Management System built for schools, students and teachers across Nigeria and Africa." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://blog.academiahq.pro/about" },
