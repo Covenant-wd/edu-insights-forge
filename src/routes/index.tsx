@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Mail, Sparkles, TrendingUp } from "lucide-react";
+import { Mail, Sparkles, TrendingUp, FolderDown } from "lucide-react";
 import { listHomePosts, listCategories } from "@/lib/posts.functions";
+import { listArchiveHighlights } from "@/lib/archive.functions";
+import { ARCHIVE_CATEGORIES } from "@/lib/archive-categories";
 import { PostCard } from "@/components/post-card";
+import { ArchiveCard } from "@/components/archive-card";
 import { AdSlot } from "@/components/ad-slot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,11 +19,17 @@ const catsQuery = queryOptions({
   queryKey: ["categories"],
   queryFn: () => listCategories(),
 });
+const archiveHighlightsQuery = queryOptions({
+  queryKey: ["archive-highlights"],
+  queryFn: () => listArchiveHighlights(),
+});
+
 
 export const Route = createFileRoute("/")({
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(homeQuery);
     context.queryClient.ensureQueryData(catsQuery);
+    context.queryClient.ensureQueryData(archiveHighlightsQuery);
   },
   head: () => ({
     meta: [
@@ -35,6 +44,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { data } = useSuspenseQuery(homeQuery);
   const { data: cats } = useSuspenseQuery(catsQuery);
+  const { data: archive } = useSuspenseQuery(archiveHighlightsQuery);
 
   const featured = (data.featured.length > 0 ? data.featured : data.latest).slice(0, 3);
   const shownIds = new Set(featured.map((p) => p.id));
@@ -59,6 +69,36 @@ function Home() {
               <SectionHeader icon={<Sparkles className="h-4 w-4" />} title="Featured" />
               <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {featured.map((p) => <PostCard key={p.id} post={p} />)}
+              </div>
+            </section>
+          )}
+
+          {/* Archive */}
+          {archive.length > 0 && (
+            <section>
+              <div className="flex flex-wrap items-end justify-between gap-3 border-b border-border/60 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-primary"><FolderDown className="h-4 w-4" /></span>
+                  <h2 className="text-lg font-bold tracking-tight">Archive — free downloads</h2>
+                </div>
+                <Link to="/archive" className="text-xs font-semibold text-primary hover:underline">Browse the archive →</Link>
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Lesson notes, schemes of work, exam series, AI prompt formats and AI-class guides for teachers.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {ARCHIVE_CATEGORIES.map((c) => (
+                  <Link
+                    key={c.key}
+                    to="/archive"
+                    className="rounded-full border border-border/60 px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary transition"
+                  >
+                    {c.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {archive.slice(0, 3).map((r) => <ArchiveCard key={r.id} item={r} />)}
               </div>
             </section>
           )}
