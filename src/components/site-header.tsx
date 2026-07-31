@@ -59,6 +59,13 @@ export function SiteHeader() {
         </Link>
 
         <nav className="ml-4 hidden lg:flex items-center gap-1">
+          <Link
+            to="/archive"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition"
+            activeProps={{ className: "text-primary" }}
+          >
+            Archive
+          </Link>
           {NAV.map((item) => (
             <Link
               key={item.label}
@@ -112,6 +119,9 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            <Link to="/archive" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted">
+              Archive
+            </Link>
             <Link to={signedIn ? "/admin" : "/auth"} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-semibold text-primary">
               {signedIn ? "Dashboard" : "Sign in"}
             </Link>
