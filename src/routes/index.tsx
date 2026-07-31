@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Mail, Sparkles, TrendingUp } from "lucide-react";
+import { Mail, Sparkles, TrendingUp, FolderDown } from "lucide-react";
 import { listHomePosts, listCategories } from "@/lib/posts.functions";
+import { listArchiveHighlights } from "@/lib/archive.functions";
+import { ARCHIVE_CATEGORIES } from "@/lib/archive-categories";
 import { PostCard } from "@/components/post-card";
+import { ArchiveCard } from "@/routes/archive";
 import { AdSlot } from "@/components/ad-slot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +19,11 @@ const catsQuery = queryOptions({
   queryKey: ["categories"],
   queryFn: () => listCategories(),
 });
+const archiveHighlightsQuery = queryOptions({
+  queryKey: ["archive-highlights"],
+  queryFn: () => listArchiveHighlights(),
+});
+
 
 export const Route = createFileRoute("/")({
   loader: ({ context }) => {
