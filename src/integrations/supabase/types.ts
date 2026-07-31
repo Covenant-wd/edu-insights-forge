@@ -44,6 +44,66 @@ export type Database = {
         }
         Relationships: []
       }
+      archive_resources: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          download_count: number
+          featured: boolean
+          file_size: string | null
+          file_type: string
+          file_url: string
+          id: string
+          level: string | null
+          slug: string
+          sort_order: number
+          status: string
+          subject: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          download_count?: number
+          featured?: boolean
+          file_size?: string | null
+          file_type?: string
+          file_url?: string
+          id?: string
+          level?: string | null
+          slug: string
+          sort_order?: number
+          status?: string
+          subject?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          download_count?: number
+          featured?: boolean
+          file_size?: string | null
+          file_type?: string
+          file_url?: string
+          id?: string
+          level?: string | null
+          slug?: string
+          sort_order?: number
+          status?: string
+          subject?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
