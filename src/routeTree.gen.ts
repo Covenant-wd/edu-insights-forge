@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -20,6 +21,7 @@ import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminNewRouteImport } from './routes/_authenticated/admin.new'
+import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin.archive'
 import { Route as AuthenticatedAdminAdsRouteImport } from './routes/_authenticated/admin.ads'
 import { Route as AuthenticatedAdminIdEditRouteImport } from './routes/_authenticated/admin.$id.edit'
 
@@ -36,6 +38,11 @@ const SearchRoute = SearchRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -77,6 +84,12 @@ const AuthenticatedAdminNewRoute = AuthenticatedAdminNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminArchiveRoute =
+  AuthenticatedAdminArchiveRouteImport.update({
+    id: '/archive',
+    path: '/archive',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminAdsRoute = AuthenticatedAdminAdsRouteImport.update({
   id: '/ads',
   path: '/ads',
@@ -92,6 +105,7 @@ const AuthenticatedAdminIdEditRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -99,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/ads': typeof AuthenticatedAdminAdsRoute
+  '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/new': typeof AuthenticatedAdminNewRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
@@ -106,12 +121,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/ads': typeof AuthenticatedAdminAdsRoute
+  '/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/admin/new': typeof AuthenticatedAdminNewRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
@@ -121,6 +138,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -128,6 +146,7 @@ export interface FileRoutesById {
   '/category/$slug': typeof CategorySlugRoute
   '/post/$slug': typeof PostSlugRoute
   '/_authenticated/admin/ads': typeof AuthenticatedAdminAdsRoute
+  '/_authenticated/admin/archive': typeof AuthenticatedAdminArchiveRoute
   '/_authenticated/admin/new': typeof AuthenticatedAdminNewRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
@@ -137,6 +156,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/archive'
     | '/auth'
     | '/search'
     | '/sitemap.xml'
@@ -144,6 +164,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/post/$slug'
     | '/admin/ads'
+    | '/admin/archive'
     | '/admin/new'
     | '/admin/'
     | '/admin/$id/edit'
@@ -151,12 +172,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/archive'
     | '/auth'
     | '/search'
     | '/sitemap.xml'
     | '/category/$slug'
     | '/post/$slug'
     | '/admin/ads'
+    | '/admin/archive'
     | '/admin/new'
     | '/admin'
     | '/admin/$id/edit'
@@ -165,6 +188,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
+    | '/archive'
     | '/auth'
     | '/search'
     | '/sitemap.xml'
@@ -172,6 +196,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/post/$slug'
     | '/_authenticated/admin/ads'
+    | '/_authenticated/admin/archive'
     | '/_authenticated/admin/new'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/$id/edit'
@@ -181,6 +206,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -209,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -267,6 +300,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminNewRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/archive': {
+      id: '/_authenticated/admin/archive'
+      path: '/archive'
+      fullPath: '/admin/archive'
+      preLoaderRoute: typeof AuthenticatedAdminArchiveRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/ads': {
       id: '/_authenticated/admin/ads'
       path: '/ads'
@@ -286,6 +326,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAdsRoute: typeof AuthenticatedAdminAdsRoute
+  AuthenticatedAdminArchiveRoute: typeof AuthenticatedAdminArchiveRoute
   AuthenticatedAdminNewRoute: typeof AuthenticatedAdminNewRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminIdEditRoute: typeof AuthenticatedAdminIdEditRoute
@@ -293,6 +334,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAdsRoute: AuthenticatedAdminAdsRoute,
+  AuthenticatedAdminArchiveRoute: AuthenticatedAdminArchiveRoute,
   AuthenticatedAdminNewRoute: AuthenticatedAdminNewRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminIdEditRoute: AuthenticatedAdminIdEditRoute,
@@ -316,6 +358,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
