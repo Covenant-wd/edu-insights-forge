@@ -4,6 +4,7 @@ import { Menu, Moon, Search, Sun, X, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { getMyRoles } from "@/lib/admin-posts.functions";
 
 const NAV = [
   { to: "/category/$slug", params: { slug: "education-news" }, label: "News" },
@@ -20,6 +21,7 @@ export function SiteHeader() {
   const [q, setQ] = useState("");
   const [dark, setDark] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,8 +29,26 @@ export function SiteHeader() {
       (typeof localStorage !== "undefined" && localStorage.getItem("theme") === "dark");
     if (initial) document.documentElement.classList.add("dark");
     setDark(initial);
-    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    
+    supabase.auth.getSession().then(({ data }) => {
+      setSignedIn(!!data.session);
+      if (data.session) {
+        getMyRoles().then((roles) => {
+          setIsAdmin(roles?.some((r: string) => r === "admin" || r === "editor") ?? false);
+        }).catch(() => setIsAdmin(false));
+      }
+    });
+    
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSignedIn(!!s);
+      if (s) {
+        getMyRoles().then((roles) => {
+          setIsAdmin(roles?.some((r: string) => r === "admin" || r === "editor") ?? false);
+        }).catch(() => setIsAdmin(false));
+      } else {
+        setIsAdmin(false);
+      }
+    });
     return () => sub.subscription.unsubscribe();
   }, []);
 
@@ -87,8 +107,8 @@ export function SiteHeader() {
             {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
           {signedIn ? (
-            <Link to="/admin" className="hidden md:inline-flex">
-              <Button size="sm" variant="secondary">Dashboard</Button>
+            <Link to={isAdmin ? "/admin" : "/account"} className="hidden md:inline-flex">
+              <Button size="sm" variant="secondary">{isAdmin ? "Admin dashboard" : "My account"}</Button>
             </Link>
           ) : (
             <Link to="/auth" className="hidden md:inline-flex">
@@ -122,8 +142,8 @@ export function SiteHeader() {
             <Link to="/archive" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted">
               Archive
             </Link>
-            <Link to={signedIn ? "/admin" : "/auth"} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-semibold text-primary">
-              {signedIn ? "Dashboard" : "Sign in"}
+            <Link to={signedIn ? (isAdmin ? "/admin" : "/account") : "/auth"} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-semibold text-primary">
+              {signedIn ? (isAdmin ? "Admin dashboard" : "My account") : "Sign in"}
             </Link>
           </div>
         </div>
