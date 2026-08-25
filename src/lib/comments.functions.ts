@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -10,6 +11,32 @@ function publicClient() {
     process.env.SUPABASE_PUBLISHABLE_KEY!,
     { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
   );
+}
+
+/**
+ * Resolve the caller's identity for a comment post without *requiring* one.
+ * Signed-in visitors get their session (so the row is tied to their
+ * user_id and RLS's "insert own" policy applies); anyone else falls
+ * through as a guest and the anonymous insert policy applies instead.
+ */
+async function resolveOptionalUser() {
+  const request = getRequest();
+  const authHeader = request?.headers?.get("authorization");
+  if (!authHeader?.startsWith("Bearer ")) return null;
+  const token = authHeader.replace("Bearer ", "");
+  if (token.split(".").length !== 3) return null;
+
+  const sb = createClient<Database>(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_PUBLISHABLE_KEY!,
+    {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+      auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+    },
+  );
+  const { data, error } = await sb.auth.getClaims(token);
+  if (error || !data?.claims?.sub) return null;
+  return { supabase: sb, userId: data.claims.sub as string, claims: data.claims as Record<string, any> };
 }
 
 export const listComments = createServerFn({ method: "GET" })
@@ -27,27 +54,57 @@ export const listComments = createServerFn({ method: "GET" })
   });
 
 export const addComment = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
-    z.object({ postId: z.string().uuid(), content: z.string().trim().min(2).max(2000) }).parse(d),
+    z.object({
+      postId: z.string().uuid(),
+      content: z.string().trim().min(2).max(2000),
+      guestName: z.string().trim().max(60).optional(),
+      guestEmail: z.string().trim().max(200).optional(),
+      // Honeypot — real visitors never fill this hidden field in.
+      website: z.string().max(0).optional(),
+    }).parse(d),
   )
-  .handler(async ({ data, context }) => {
-    const { data: profile } = await context.supabase
-      .from("profiles")
-      .select("display_name")
-      .eq("id", context.userId)
-      .maybeSingle();
+  .handler(async ({ data }) => {
+    if (data.website) return { ok: true }; // silently drop bot submissions
 
-    const claims = context.claims as Record<string, any> | undefined;
-    const fallback =
-      (claims?.["user_metadata"]?.["full_name"] as string | undefined) ??
-      (typeof claims?.["email"] === "string" ? (claims["email"] as string).split("@")[0] : undefined);
+    const session = await resolveOptionalUser();
 
-    const { error } = await context.supabase.from("comments").insert({
+    if (session) {
+      const { data: profile } = await session.supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", session.userId)
+        .maybeSingle();
+
+      const fallback =
+        (session.claims["user_metadata"]?.["full_name"] as string | undefined) ??
+        (typeof session.claims["email"] === "string" ? (session.claims["email"] as string).split("@")[0] : undefined);
+
+      const { error } = await session.supabase.from("comments").insert({
+        post_id: data.postId,
+        user_id: session.userId,
+        content: data.content,
+        author_name: profile?.display_name || fallback || "Reader",
+      });
+      if (error) throw new Error(error.message);
+      return { ok: true };
+    }
+
+    const guestName = data.guestName?.trim();
+    if (!guestName || guestName.length < 2) {
+      throw new Error("Please enter your name to comment.");
+    }
+    if (data.guestEmail && !/^\S+@\S+\.\S+$/.test(data.guestEmail)) {
+      throw new Error("That email address doesn't look right.");
+    }
+
+    const sb = publicClient();
+    const { error } = await sb.from("comments").insert({
       post_id: data.postId,
-      user_id: context.userId,
+      user_id: null,
       content: data.content,
-      author_name: profile?.display_name || fallback || "Reader",
+      author_name: guestName,
+      guest_email: data.guestEmail || null,
     });
     if (error) throw new Error(error.message);
     return { ok: true };
