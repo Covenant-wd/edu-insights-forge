@@ -16,7 +16,10 @@ import "@fontsource/plus-jakarta-sans/600.css";
 import "@fontsource/plus-jakarta-sans/700.css";
 import "@fontsource/plus-jakarta-sans/800.css";
 import "@fontsource/source-serif-4/400.css";
+import "@fontsource/source-serif-4/400-italic.css";
 import "@fontsource/source-serif-4/600.css";
+import "@fontsource/source-serif-4/700.css";
+import "@fontsource/source-serif-4/900.css";
 
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site-header";
@@ -76,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: SITE_NAME },
       { name: "description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
       { name: "author", content: "Academia HQ" },
-      { name: "theme-color", content: "#2563EB" },
+      { name: "theme-color", content: "#712A1E" },
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: SITE_NAME },
       { property: "og:description", content: "Latest education news, WAEC/JAMB/NECO updates, scholarships, teacher hub and career guidance across Nigeria and Africa." },
