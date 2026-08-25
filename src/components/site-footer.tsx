@@ -37,21 +37,19 @@ const COLUMNS = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 bg-secondary/40 mt-24">
+    <footer className="rule-double mt-24 bg-secondary/40">
       <div className="container-blog py-16 grid gap-12 lg:grid-cols-[1.4fr_2fr_1.2fr]">
         <div>
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
-            </span>
-            Academia<span className="text-primary">HQ</span>
+          <Link to="/" className="flex items-center gap-2">
+            <GraduationCap className="h-6 w-6 text-primary" strokeWidth={2.25} />
+            <span className="font-display text-xl font-bold">Academia<span className="text-primary">HQ</span></span>
           </Link>
           <p className="mt-4 text-sm text-muted-foreground max-w-sm">
             Trusted education news, exam updates, scholarships and teacher resources for students, parents and educators across Africa.
           </p>
           <div className="mt-5 flex gap-2">
             {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-              <a key={i} href="#" aria-label="Social" className="grid h-9 w-9 place-items-center rounded-md border border-border/70 hover:bg-muted transition">
+              <a key={i} href="#" aria-label="Social" className="grid h-9 w-9 place-items-center border border-border/70 hover:border-primary hover:text-primary transition">
                 <Icon className="h-4 w-4" />
               </a>
             ))}
@@ -61,8 +59,8 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
           {COLUMNS.map((col) => (
             <div key={col.title}>
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{col.title}</div>
-              <ul className="mt-3 space-y-2">
+              <div className="kicker">{col.title}</div>
+              <ul className="mt-4 space-y-2">
                 {col.links.map((l) => (
                   <li key={l.to}>
                     <a href={l.to} className="text-sm hover:text-primary transition">{l.label}</a>
@@ -74,11 +72,11 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Newsletter</div>
-          <p className="mt-3 text-sm text-muted-foreground">Weekly education updates in your inbox.</p>
+          <div className="kicker">Newsletter</div>
+          <p className="mt-4 text-sm text-muted-foreground">Weekly education updates in your inbox.</p>
           <form className="mt-3 flex gap-2" onSubmit={(e) => e.preventDefault()}>
-            <Input type="email" placeholder="you@school.edu" required />
-            <Button type="submit">Join</Button>
+            <Input type="email" placeholder="you@school.edu" required className="rounded-none" />
+            <Button type="submit" className="rounded-none">Join</Button>
           </form>
         </div>
       </div>

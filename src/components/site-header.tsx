@@ -68,36 +68,26 @@ export function SiteHeader() {
     }
   };
 
-  return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
-      <div className="container-blog flex h-16 items-center gap-4">
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg tracking-tight">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <GraduationCap className="h-5 w-5" />
-          </span>
-          <span className="hidden sm:inline">Academia<span className="text-primary"> HQ</span></span>
-        </Link>
+  const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-        <nav className="ml-4 hidden lg:flex items-center gap-1">
-          <Link
-            to="/archive"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition"
-            activeProps={{ className: "text-primary" }}
-          >
-            Archive
-          </Link>
-          {NAV.map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              params={item.params}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition"
-              activeProps={{ className: "text-primary" }}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+  return (
+    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md">
+      {/* Utility strip */}
+      <div className="hidden border-b border-border/70 sm:block">
+        <div className="container-blog flex h-9 items-center justify-between text-[11px] font-medium text-muted-foreground">
+          <span>{today}</span>
+          <span className="hidden md:inline">Education news, exam updates &amp; career guidance for Nigeria and Africa</span>
+        </div>
+      </div>
+
+      {/* Masthead */}
+      <div className="container-blog flex items-center gap-4 py-5">
+        <Link to="/" className="flex items-center gap-2.5">
+          <GraduationCap className="h-7 w-7 text-primary" strokeWidth={2.25} />
+          <span className="font-display text-[1.65rem] font-bold leading-none tracking-tight">
+            Academia<span className="text-primary">HQ</span>
+          </span>
+        </Link>
 
         <div className="ml-auto flex items-center gap-1">
           <Button variant="ghost" size="icon" onClick={() => setSearchOpen((v) => !v)} aria-label="Search">
@@ -121,8 +111,33 @@ export function SiteHeader() {
         </div>
       </div>
 
+      {/* Section nav, double-ruled like a print masthead */}
+      <nav className="rule-double hidden lg:block">
+        <div className="container-blog flex h-11 items-center gap-1">
+          <Link
+            to="/archive"
+            className="px-3 py-2 text-[13px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-primary transition"
+            activeProps={{ className: "text-primary" }}
+          >
+            Archive
+          </Link>
+          {NAV.map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              params={item.params}
+              className="px-3 py-2 text-[13px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-primary transition"
+              activeProps={{ className: "text-primary" }}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
+      <div className="border-b border-border/70 lg:hidden" />
+
       {searchOpen && (
-        <div className="border-t border-border/60 bg-background">
+        <div className="border-b border-border/70 bg-background">
           <form onSubmit={submit} className="container-blog flex items-center gap-2 py-3">
             <Search className="h-5 w-5 text-muted-foreground" />
             <Input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search articles, exams, scholarships..." className="border-0 focus-visible:ring-0 shadow-none" />
@@ -132,7 +147,7 @@ export function SiteHeader() {
       )}
 
       {open && (
-        <div className="lg:hidden border-t border-border/60 bg-background">
+        <div className="lg:hidden border-b border-border/70 bg-background">
           <div className="container-blog py-4 flex flex-col gap-1">
             {NAV.map((item) => (
               <Link key={item.label} to={item.to} params={item.params} onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted">

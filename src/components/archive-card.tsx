@@ -10,18 +10,18 @@ export function ArchiveCard({ item }: { item: any }) {
   const disabled = !item.file_url;
   
   return (
-    <div className="flex flex-col rounded-xl border border-border/60 bg-card p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-hero">
+    <div className="flex flex-col border border-border/70 bg-card p-5 transition hover:border-primary/50 hover:shadow-lift">
       <div className="flex items-start justify-between gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 text-primary">
+        <span className="grid h-10 w-10 place-items-center border border-primary/30 text-primary">
           <FileText className="h-5 w-5" />
         </span>
         <div className="flex flex-wrap items-center justify-end gap-1">
-          <Badge variant="outline">{item.file_type}</Badge>
-          {item.featured && <Badge>Popular</Badge>}
+          <Badge variant="outline" className="rounded-none">{item.file_type}</Badge>
+          {item.featured && <Badge className="rounded-none">Popular</Badge>}
         </div>
       </div>
-      <div className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-primary">{archiveCategoryLabel(item.category)}</div>
-      <h3 className="mt-1 text-base font-bold leading-snug tracking-tight">{item.title}</h3>
+      <div className="mt-3 text-[11px] font-bold uppercase tracking-wider text-primary">{archiveCategoryLabel(item.category)}</div>
+      <h3 className="mt-1 font-display text-base font-bold leading-snug tracking-tight">{item.title}</h3>
       {item.description && <p className="mt-1.5 text-sm text-muted-foreground line-clamp-3">{item.description}</p>}
       <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
         {item.level && <span>{item.level}</span>}
