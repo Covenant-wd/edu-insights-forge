@@ -4,6 +4,7 @@ import { Clock, Calendar, Share2 } from "lucide-react";
 import sanitizeHtml from "sanitize-html";
 import { getPostBySlug } from "@/lib/posts.functions";
 import { PostCard } from "@/components/post-card";
+import { CommentsSection } from "@/components/comments-section";
 import { AdSlot } from "@/components/ad-slot";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 
@@ -145,6 +146,9 @@ function PostPage() {
               <p className="mt-3 text-sm text-muted-foreground">{post.author.bio}</p>
             </div>
           )}
+
+          {/* Comments Section */}
+          <CommentsSection postId={post.id} />
         </div>
 
         <aside className="space-y-8">
