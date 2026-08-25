@@ -6,13 +6,14 @@
 
 @theme inline {
   --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-serif: "Source Serif 4", "Georgia", ui-serif, serif;
+  --font-display: "Source Serif 4", "Georgia", ui-serif, serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) + 6px);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -37,86 +38,74 @@
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
 
-  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 24px oklch(0 0 0 / 0.06);
-  --shadow-hero: 0 24px 60px -20px oklch(0.44 0.19 258 / 0.35);
-
-  /* Neumorphic soft-UI shadows */
-  --shadow-neu: 8px 8px 18px var(--neu-dark), -8px -8px 18px var(--neu-light);
-  --shadow-neu-sm: 4px 4px 10px var(--neu-dark), -4px -4px 10px var(--neu-light);
-  --shadow-neu-xs: 2px 2px 6px var(--neu-dark), -2px -2px 6px var(--neu-light);
-  --shadow-neu-inset: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light);
-  --shadow-neu-pressed: inset 3px 3px 7px var(--neu-dark), inset -3px -3px 7px var(--neu-light);
+  --shadow-card: 0 1px 1px oklch(0 0 0 / 0.03), 0 1px 0 oklch(0 0 0 / 0.05);
+  --shadow-hero: 0 30px 60px -24px oklch(0.19 0.01 30 / 0.45);
+  --shadow-lift: 0 14px 30px -16px oklch(0.19 0.01 30 / 0.35);
 }
 
 
 :root {
-  --radius: 1rem;
+  --radius: 0.5rem;
 
-  /* Soft neumorphic surface — background and card share one tone */
-  --background: oklch(0.955 0.006 250);
-  --foreground: oklch(0.26 0.03 260);
+  /* Warm paper surface — editorial, not clinical grey */
+  --background: oklch(0.985 0.005 85);
+  --foreground: oklch(0.2 0.014 40);
 
-  --card: oklch(0.955 0.006 250);
-  --card-foreground: oklch(0.26 0.03 260);
+  --card: oklch(0.995 0.003 85);
+  --card-foreground: oklch(0.2 0.014 40);
 
-  --popover: oklch(0.968 0.005 250);
-  --popover-foreground: oklch(0.26 0.03 260);
+  --popover: oklch(0.995 0.003 85);
+  --popover-foreground: oklch(0.2 0.014 40);
 
-  --neu-light: oklch(1 0 0 / 0.9);
-  --neu-dark: oklch(0.62 0.03 260 / 0.28);
-
-  /* Soft brand blue */
-  --primary: oklch(0.62 0.14 258);
+  /* Masthead red — a confident, human editorial mark, not a SaaS gradient */
+  --primary: oklch(0.44 0.17 25);
   --primary-foreground: oklch(0.99 0 0);
-  --primary-glow: oklch(0.74 0.11 255);
-  --brand: oklch(0.62 0.14 258);
+  --primary-glow: oklch(0.55 0.17 25);
+  --brand: oklch(0.44 0.17 25);
   --brand-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.955 0.006 250);
-  --secondary-foreground: oklch(0.34 0.03 260);
+  --secondary: oklch(0.96 0.006 85);
+  --secondary-foreground: oklch(0.28 0.015 40);
 
-  --muted: oklch(0.945 0.007 250);
-  --muted-foreground: oklch(0.55 0.02 260);
+  --muted: oklch(0.955 0.007 85);
+  --muted-foreground: oklch(0.46 0.014 50);
 
-  /* Soft amber accent */
-  --accent: oklch(0.84 0.1 78);
-  --accent-foreground: oklch(0.32 0.05 60);
+  /* Ochre accent — used sparingly for kickers, ranks, highlights */
+  --accent: oklch(0.7 0.13 70);
+  --accent-foreground: oklch(0.24 0.04 60);
 
-  --destructive: oklch(0.62 0.16 25);
+  --destructive: oklch(0.55 0.19 27);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.9 0.008 255);
-  --input: oklch(0.94 0.008 255);
-  --ring: oklch(0.62 0.14 258);
+  --border: oklch(0.88 0.008 60);
+  --input: oklch(0.93 0.008 60);
+  --ring: oklch(0.44 0.17 25);
 }
 
 .dark {
-  --background: oklch(0.24 0.02 262);
-  --foreground: oklch(0.94 0.005 250);
-  --card: oklch(0.24 0.02 262);
-  --card-foreground: oklch(0.94 0.005 250);
-  --popover: oklch(0.27 0.02 262);
-  --popover-foreground: oklch(0.94 0.005 250);
+  --background: oklch(0.17 0.012 40);
+  --foreground: oklch(0.93 0.006 80);
+  --card: oklch(0.2 0.013 40);
+  --card-foreground: oklch(0.93 0.006 80);
+  --popover: oklch(0.2 0.013 40);
+  --popover-foreground: oklch(0.93 0.006 80);
 
-  --neu-light: oklch(0.36 0.02 262 / 0.75);
-  --neu-dark: oklch(0.12 0.02 262 / 0.7);
-
-  --primary: oklch(0.7 0.13 258);
-  --primary-foreground: oklch(0.18 0.02 260);
-  --primary-glow: oklch(0.78 0.1 255);
-  --brand: oklch(0.7 0.13 258);
-  --brand-foreground: oklch(0.18 0.02 260);
-  --secondary: oklch(0.24 0.02 262);
-  --secondary-foreground: oklch(0.92 0.005 250);
-  --muted: oklch(0.28 0.02 262);
-  --muted-foreground: oklch(0.72 0.02 255);
-  --accent: oklch(0.8 0.11 78);
-  --accent-foreground: oklch(0.2 0.05 60);
-  --destructive: oklch(0.62 0.17 25);
+  --primary: oklch(0.64 0.16 27);
+  --primary-foreground: oklch(0.14 0.01 40);
+  --primary-glow: oklch(0.7 0.15 27);
+  --brand: oklch(0.64 0.16 27);
+  --brand-foreground: oklch(0.14 0.01 40);
+  --secondary: oklch(0.23 0.012 40);
+  --secondary-foreground: oklch(0.9 0.006 80);
+  --muted: oklch(0.25 0.012 40);
+  --muted-foreground: oklch(0.66 0.012 70);
+  --accent: oklch(0.75 0.12 70);
+  --accent-foreground: oklch(0.2 0.04 60);
+  --destructive: oklch(0.64 0.18 27);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.7 0.13 258);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.64 0.16 27);
 }
 
 
@@ -138,59 +127,105 @@
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-sans);
-    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
 @utility container-blog {
   width: 100%;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: 1.25rem;
   max-width: 1200px;
   @media (min-width: 768px) {
     padding-inline: 2rem;
   }
 }
 
+/* Small-caps section label with a colored tick — the recurring editorial
+   signature used for section headers, category kickers and bylines. */
+@utility kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+
+  &::before {
+    content: "";
+    width: 0.85rem;
+    height: 2px;
+    background: var(--color-primary);
+    flex-shrink: 0;
+  }
+}
+
+/* Double-rule masthead divider */
+@utility rule-double {
+  border-top: 3px solid var(--color-foreground);
+  border-bottom: 1px solid var(--color-foreground);
+  padding-top: 2px;
+}
+
 @utility prose-article {
   font-family: var(--font-serif);
-  font-size: 1.125rem;
-  line-height: 1.75;
+  font-size: 1.1875rem;
+  line-height: 1.8;
   color: var(--color-foreground);
 
-  & p { margin-block: 1.25em; }
+  & > p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    float: left;
+    font-size: 3.4em;
+    line-height: 0.86;
+    font-weight: 700;
+    padding-right: 0.09em;
+    padding-top: 0.03em;
+    color: var(--color-primary);
+  }
+
+  & p { margin-block: 1.3em; }
   & h2 {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: 1.75rem;
     font-weight: 700;
-    margin-top: 2.5rem;
+    margin-top: 2.75rem;
     margin-bottom: 1rem;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.75rem;
   }
   & h3 {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: 1.375rem;
     font-weight: 700;
-    margin-top: 2rem;
+    margin-top: 2.25rem;
     margin-bottom: 0.75rem;
   }
-  & a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+  & a { color: var(--color-primary); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--color-primary) 40%, transparent); text-underline-offset: 3px; }
   & blockquote {
-    border-left: 4px solid var(--color-accent);
-    padding: 0.5rem 1.25rem;
+    border-left: 3px solid var(--color-primary);
+    padding: 0.25rem 1.5rem;
     font-style: italic;
-    color: var(--color-muted-foreground);
-    margin: 1.5rem 0;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--color-foreground);
+    margin: 2rem 0;
   }
   & ul, & ol { padding-left: 1.5rem; margin-block: 1rem; }
   & li { margin-block: 0.4rem; }
-  & img { border-radius: var(--radius-lg); margin-block: 1.5rem; }
+  & img { border-radius: var(--radius-md); margin-block: 1.75rem; }
   & code {
+    font-family: ui-monospace, monospace;
     background: var(--color-muted);
     padding: 0.15rem 0.4rem;
     border-radius: var(--radius-sm);
-    font-size: 0.95em;
+    font-size: 0.85em;
   }
 
   & p.is-editor-empty:first-child::before {
@@ -202,28 +237,31 @@
   }
 }
 
+/* Editorial surface — crisp border, flat fill, no soft AI-glow shadow.
+   Kept under the historical "neu" class names so every existing usage
+   across the app picks up the new look without a per-file rewrite. */
 @utility neu {
   background-color: var(--color-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-neu);
-  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
 }
 
 @utility neu-sm {
   background-color: var(--color-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-neu-sm);
-  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  border: 1px solid var(--color-border);
 }
 
 @utility neu-inset {
-  background-color: var(--color-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-neu-inset);
+  background-color: var(--color-muted);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
 }
 
 @utility neu-interactive {
-  transition: box-shadow 220ms ease, transform 220ms ease;
-  &:hover { box-shadow: var(--shadow-neu); transform: translateY(-1px); }
-  &:active { box-shadow: var(--shadow-neu-pressed); transform: translateY(0); }
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  &:hover { border-color: color-mix(in oklab, var(--color-primary) 45%, var(--color-border)); box-shadow: var(--shadow-lift); transform: translateY(-1px); }
+  &:active { transform: translateY(0); box-shadow: none; }
 }
