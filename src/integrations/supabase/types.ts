@@ -136,28 +136,31 @@ export type Database = {
           author_name: string
           content: string
           created_at: string
+          guest_email: string | null
           id: string
           post_id: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           author_name?: string
           content: string
           created_at?: string
+          guest_email?: string | null
           id?: string
           post_id: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           author_name?: string
           content?: string
           created_at?: string
+          guest_email?: string | null
           id?: string
           post_id?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
