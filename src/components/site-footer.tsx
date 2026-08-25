@@ -40,9 +40,12 @@ export function SiteFooter() {
     <footer className="rule-double mt-24 bg-secondary/40">
       <div className="container-blog py-16 grid gap-12 lg:grid-cols-[1.4fr_2fr_1.2fr]">
         <div>
-          <Link to="/" className="flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 text-primary" strokeWidth={2.25} />
-            <span className="font-display text-xl font-bold">Academia<span className="text-primary">HQ</span></span>
+          <Link to="/" className="flex items-baseline gap-2">
+            <span className="flex items-center gap-2">
+              <GraduationCap className="h-6 w-6 text-primary" strokeWidth={2.25} />
+              <span className="font-display text-xl font-bold">Academia<span className="text-primary">HQ</span></span>
+            </span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Blog</span>
           </Link>
           <p className="mt-4 text-sm text-muted-foreground max-w-sm">
             Trusted education news, exam updates, scholarships and teacher resources for students, parents and educators across Africa.
@@ -82,7 +85,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border/60">
         <div className="container-blog py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} Academia HQ. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Academia HQ Blog. All rights reserved.</p>
           <p>Built for students, teachers, and schools across Nigeria and Africa.</p>
         </div>
       </div>
