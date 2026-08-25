@@ -201,3 +201,29 @@
     pointer-events: none;
   }
 }
+
+@utility neu {
+  background-color: var(--color-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-neu);
+  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+}
+
+@utility neu-sm {
+  background-color: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neu-sm);
+  border: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+}
+
+@utility neu-inset {
+  background-color: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-neu-inset);
+}
+
+@utility neu-interactive {
+  transition: box-shadow 220ms ease, transform 220ms ease;
+  &:hover { box-shadow: var(--shadow-neu); transform: translateY(-1px); }
+  &:active { box-shadow: var(--shadow-neu-pressed); transform: translateY(0); }
+}
