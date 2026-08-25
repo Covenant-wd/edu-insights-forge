@@ -65,7 +65,7 @@ function ArchivePage() {
       <AdSlot format="leaderboard" className="hidden md:flex mt-8" />
       <AdSlot format="mobile-banner" className="md:hidden mt-8" />
 
-      <div className="mt-8 flex flex-wrap gap-2">
+      <div className="mt-8 neu-sm p-5 flex flex-wrap gap-2">
         <FilterChip label="All resources" active={active === "all"} onClick={() => setActive("all")} />
         {ARCHIVE_CATEGORIES.map((c) => (
           <FilterChip key={c.key} label={c.label} active={active === c.key} onClick={() => setActive(c.key)} />
@@ -79,7 +79,7 @@ function ArchivePage() {
       </div>
 
       {items.length === 0 && (
-        <div className="mt-8 rounded-xl border border-dashed border-border p-12 text-center">
+        <div className="mt-8 neu-inset p-12 text-center">
           <h3 className="text-lg font-semibold">Nothing here yet</h3>
           <p className="mt-1 text-sm text-muted-foreground">New downloads are added to this archive regularly — check back soon.</p>
           <Link to="/" className="inline-flex mt-4"><Button variant="outline">Back to blog</Button></Link>
@@ -94,12 +94,13 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition ${
-        active ? "border-primary bg-primary text-primary-foreground" : "border-border/60 text-muted-foreground hover:border-primary hover:text-primary"
+      className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+        active
+          ? "neu-interactive bg-primary text-primary-foreground shadow-md"
+          : "neu-sm text-muted-foreground hover:text-foreground hover:shadow-md"
       }`}
     >
       {label}
     </button>
   );
 }
-
