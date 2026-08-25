@@ -51,11 +51,9 @@ function ArchivePage() {
 
   return (
     <div className="container-blog py-10">
-      <div className="border-b border-border/60 pb-6">
-        <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
-          <Sparkles className="h-3.5 w-3.5" /> Archive
-        </div>
-        <h1 className="mt-2 text-2xl md:text-3xl font-extrabold tracking-tight">Downloads & teaching resources</h1>
+      <div className="rule-double pb-6">
+        <p className="kicker"><Sparkles className="h-3.5 w-3.5" /> Archive</p>
+        <h1 className="mt-2 font-display text-2xl md:text-3xl font-bold tracking-tight">Downloads & teaching resources</h1>
         <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
           Free, ready-to-use materials for teachers and students — subject lesson notes, schemes of work, exam series, AI prompt formats and
           practical guides on using AI in class.

@@ -48,9 +48,9 @@ function CategoryPage() {
       <nav className="text-xs text-muted-foreground">
         <a href="/" className="hover:text-primary">Home</a> · <span>{cat.name}</span>
       </nav>
-      <header className="mt-4 border-b border-border/60 pb-6">
-        <div className="text-xs font-semibold uppercase tracking-wider text-primary">Topic</div>
-        <h1 className="mt-2 text-4xl md:text-5xl font-extrabold tracking-tight">{cat.name}</h1>
+      <header className="rule-double mt-4 pb-6">
+        <p className="kicker">Topic</p>
+        <h1 className="mt-2 font-display text-4xl md:text-5xl font-bold tracking-tight">{cat.name}</h1>
         {cat.description && <p className="mt-3 max-w-2xl text-muted-foreground">{cat.description}</p>}
       </header>
 

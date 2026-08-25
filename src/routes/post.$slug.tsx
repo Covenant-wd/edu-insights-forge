@@ -80,24 +80,20 @@ function PostPage() {
     <article>
       {/* Header + cover */}
       <div className="container-blog pt-8">
-        <nav className="text-xs text-muted-foreground">
+        <nav className="text-xs font-medium text-muted-foreground">
           <Link to="/" className="hover:text-primary">Home</Link>
-          {post.category && (<> · <Link to="/category/$slug" params={{ slug: post.category.slug }} className="hover:text-primary">{post.category.name}</Link></>)}
+          {post.category && (<> <span className="mx-1">/</span> <Link to="/category/$slug" params={{ slug: post.category.slug }} className="hover:text-primary">{post.category.name}</Link></>)}
         </nav>
-        <div className="mt-4 max-w-3xl">
-          {post.category && (
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-              {post.category.name}
-            </span>
-          )}
-          <h1 className="mt-4 text-3xl md:text-5xl font-extrabold tracking-tight leading-[1.1]">{post.title}</h1>
-          {post.excerpt && <p className="mt-4 text-lg text-muted-foreground">{post.excerpt}</p>}
-          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        <div className="mt-5 max-w-3xl">
+          {post.category && <p className="kicker">{post.category.name}</p>}
+          <h1 className="mt-3 font-display text-3xl md:text-5xl font-bold tracking-tight leading-[1.08]">{post.title}</h1>
+          {post.excerpt && <p className="mt-4 font-serif text-lg text-muted-foreground italic">{post.excerpt}</p>}
+          <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border/70 pt-5 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               {post.author?.avatar_url ? (
-                <img src={post.author.avatar_url} alt="" className="h-9 w-9 rounded-full object-cover" />
+                <img src={post.author.avatar_url} alt="" className="h-9 w-9 object-cover" />
               ) : (
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/10 text-primary text-sm font-bold">
+                <span className="grid h-9 w-9 place-items-center border border-border bg-muted text-foreground text-sm font-bold">
                   {(post.author?.display_name ?? "A").charAt(0)}
                 </span>
               )}
@@ -114,7 +110,7 @@ function PostPage() {
 
       {post.cover_image && (
         <div className="container-blog mt-8">
-          <img src={post.cover_image} alt={post.title} className="rounded-2xl w-full max-h-[520px] object-cover shadow-hero" width={1600} height={900} />
+          <img src={post.cover_image} alt={post.title} className="w-full max-h-[520px] object-cover shadow-hero" width={1600} height={900} />
         </div>
       )}
 
@@ -135,12 +131,12 @@ function PostPage() {
           </div>
 
           {post.author?.bio && (
-            <div className="mt-8 rounded-xl border border-border/60 bg-card p-6">
+            <div className="mt-8 border border-border/60 bg-card p-6">
               <div className="flex items-center gap-3">
-                {post.author.avatar_url && <img src={post.author.avatar_url} alt="" className="h-12 w-12 rounded-full object-cover" />}
+                {post.author.avatar_url && <img src={post.author.avatar_url} alt="" className="h-12 w-12 object-cover" />}
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Written by</div>
-                  <div className="font-bold">{post.author.display_name}</div>
+                  <div className="kicker">Written by</div>
+                  <div className="font-display font-bold">{post.author.display_name}</div>
                 </div>
               </div>
               <p className="mt-3 text-sm text-muted-foreground">{post.author.bio}</p>
@@ -153,18 +149,18 @@ function PostPage() {
 
         <aside className="space-y-8">
           <AdSlot format="large-rectangle" />
-          <div className="rounded-xl border border-border/60 bg-card p-5">
-            <div className="text-xs font-semibold uppercase tracking-wider text-primary">Newsletter</div>
+          <div className="border border-border/60 bg-card p-5">
+            <div className="kicker">Newsletter</div>
             <p className="mt-2 text-sm text-muted-foreground">Get education updates delivered weekly.</p>
-            <a href="#" className="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Subscribe</a>
+            <a href="#" className="mt-3 inline-block bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Subscribe</a>
           </div>
           <AdSlot format="sidebar" className="hidden lg:flex" />
         </aside>
       </div>
 
       {related.length > 0 && (
-        <section className="container-blog py-16 border-t border-border/60 mt-16">
-          <h2 className="text-2xl font-bold">Related articles</h2>
+        <section className="container-blog py-16 border-t-2 border-foreground mt-16">
+          <h2 className="font-display text-2xl font-bold">Related articles</h2>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p) => <PostCard key={p.id} post={p} />)}
           </div>
