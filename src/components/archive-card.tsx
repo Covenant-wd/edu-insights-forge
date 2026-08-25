@@ -1,10 +1,14 @@
 import { Download, FileText } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { archiveCategoryLabel } from "@/lib/archive-categories";
+import { useSession } from "@/hooks/use-session";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export function ArchiveCard({ item }: { item: any }) {
+  const { signedIn } = useSession();
   const disabled = !item.file_url;
+  
   return (
     <div className="flex flex-col rounded-xl border border-border/60 bg-card p-5 shadow-card transition hover:-translate-y-0.5 hover:shadow-hero">
       <div className="flex items-start justify-between gap-3">
@@ -27,6 +31,10 @@ export function ArchiveCard({ item }: { item: any }) {
       <div className="mt-auto pt-4">
         {disabled ? (
           <Button variant="outline" className="w-full" disabled>Coming soon</Button>
+        ) : !signedIn ? (
+          <Link to="/auth" className="block">
+            <Button className="w-full"><Download className="mr-1.5 h-4 w-4" />Sign in to download</Button>
+          </Link>
         ) : (
           <a href={item.file_url} target="_blank" rel="noopener noreferrer" download>
             <Button className="w-full"><Download className="mr-1.5 h-4 w-4" />Download</Button>
