@@ -185,7 +185,7 @@ function AuthPage() {
           </span>
           Academia<span className="text-primary">HQ</span>
         </Link>
-        <div className="mt-8 rounded-2xl border border-border/60 bg-card p-6 shadow-card">
+        <div className="mt-8 neu p-6">
           <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList className="grid grid-cols-2 w-full">
               <TabsTrigger value="signin">Sign in</TabsTrigger>
@@ -193,13 +193,13 @@ function AuthPage() {
             </TabsList>
 
             <TabsContent value="signin" className="mt-6 space-y-4">
-              <Button type="button" variant="outline" className="w-full" onClick={google} disabled={loading}>
+              <Button type="button" variant="outline" className="w-full neu-interactive" onClick={google} disabled={loading}>
                 Continue with Google
               </Button>
               <Divider />
               <form onSubmit={signIn} className="space-y-3">
                 {signInError && (
-                  <div className="p-2 bg-destructive/10 border border-destructive/30 rounded text-sm text-destructive">
+                  <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">
                     {signInError}
                   </div>
                 )}
@@ -230,20 +230,20 @@ function AuthPage() {
                     disabled={loading}
                   />
                 </Field>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full neu-interactive" disabled={loading}>
                   {loading ? "Signing in..." : "Sign in"}
                 </Button>
               </form>
             </TabsContent>
 
             <TabsContent value="signup" className="mt-6 space-y-4">
-              <Button type="button" variant="outline" className="w-full" onClick={google} disabled={loading}>
+              <Button type="button" variant="outline" className="w-full neu-interactive" onClick={google} disabled={loading}>
                 Continue with Google
               </Button>
               <Divider />
               <form onSubmit={signUp} className="space-y-3">
                 {signUpError && (
-                  <div className="p-2 bg-destructive/10 border border-destructive/30 rounded text-sm text-destructive">
+                  <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">
                     {signUpError}
                   </div>
                 )}
@@ -287,7 +287,7 @@ function AuthPage() {
                     disabled={loading}
                   />
                 </Field>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full neu-interactive" disabled={loading}>
                   {loading ? "Creating account..." : "Create account"}
                 </Button>
               </form>
