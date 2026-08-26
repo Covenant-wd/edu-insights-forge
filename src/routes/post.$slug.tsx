@@ -26,6 +26,11 @@ export const Route = createFileRoute("/post/$slug")({
     }
     const { post } = loaderData;
     const url = absoluteUrl(`/post/${params.slug}`);
+    const cover = post.cover_image
+      ? post.cover_image.startsWith("http")
+        ? post.cover_image
+        : absoluteUrl(post.cover_image)
+      : null;
     return {
       meta: [
         { title: `${post.title} | ${SITE_NAME}` },
