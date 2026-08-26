@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/rich-text-editor";
+import { ImageUploadField } from "@/components/image-upload-field";
 
 type Initial = Partial<{
   id: string;
@@ -107,8 +108,8 @@ export default function PostEditor({ initial = {}, onSaved }: { initial?: Initia
         </div>
 
         <div>
-          <Label>Cover image URL</Label>
-          <Input value={values.cover_image} onChange={(e) => set("cover_image", e.target.value)} placeholder="https://…" className="mt-1.5" />
+          <Label>Cover image</Label>
+          <ImageUploadField value={values.cover_image} onChange={(v) => set("cover_image", v)} />
         </div>
 
         <div>

@@ -24,6 +24,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminNewRouteImport } from './routes/_authenticated/admin.new'
 import { Route as AuthenticatedAdminArchiveRouteImport } from './routes/_authenticated/admin.archive'
 import { Route as AuthenticatedAdminAdsRouteImport } from './routes/_authenticated/admin.ads'
+import { Route as ApiPublicPostImageSplatRouteImport } from './routes/api/public/post-image.$'
 import { Route as AuthenticatedAdminIdEditRouteImport } from './routes/_authenticated/admin.$id.edit'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -101,6 +102,11 @@ const AuthenticatedAdminAdsRoute = AuthenticatedAdminAdsRouteImport.update({
   path: '/ads',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const ApiPublicPostImageSplatRoute = ApiPublicPostImageSplatRouteImport.update({
+  id: '/api/public/post-image/$',
+  path: '/api/public/post-image/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIdEditRoute =
   AuthenticatedAdminIdEditRouteImport.update({
     id: '/$id/edit',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/admin/new': typeof AuthenticatedAdminNewRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
+  '/api/public/post-image/$': typeof ApiPublicPostImageSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/admin/new': typeof AuthenticatedAdminNewRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
+  '/api/public/post-image/$': typeof ApiPublicPostImageSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/new': typeof AuthenticatedAdminNewRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/$id/edit': typeof AuthenticatedAdminIdEditRoute
+  '/api/public/post-image/$': typeof ApiPublicPostImageSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/admin/new'
     | '/admin/'
     | '/admin/$id/edit'
+    | '/api/public/post-image/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/admin/new'
     | '/admin'
     | '/admin/$id/edit'
+    | '/api/public/post-image/$'
   id:
     | '__root__'
     | '/'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/new'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/$id/edit'
+    | '/api/public/post-image/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CategorySlugRoute: typeof CategorySlugRoute
   PostSlugRoute: typeof PostSlugRoute
+  ApiPublicPostImageSplatRoute: typeof ApiPublicPostImageSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -333,6 +346,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/post-image/$': {
+      id: '/api/public/post-image/$'
+      path: '/api/public/post-image/$'
+      fullPath: '/api/public/post-image/$'
+      preLoaderRoute: typeof ApiPublicPostImageSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/$id/edit': {
       id: '/_authenticated/admin/$id/edit'
       path: '/$id/edit'
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CategorySlugRoute: CategorySlugRoute,
   PostSlugRoute: PostSlugRoute,
+  ApiPublicPostImageSplatRoute: ApiPublicPostImageSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -26,6 +26,11 @@ export const Route = createFileRoute("/post/$slug")({
     }
     const { post } = loaderData;
     const url = absoluteUrl(`/post/${params.slug}`);
+    const cover = post.cover_image
+      ? post.cover_image.startsWith("http")
+        ? post.cover_image
+        : absoluteUrl(post.cover_image)
+      : null;
     return {
       meta: [
         { title: `${post.title} | ${SITE_NAME}` },
@@ -37,7 +42,7 @@ export const Route = createFileRoute("/post/$slug")({
         ...(post.category ? [{ property: "article:section", content: post.category.name }] : []),
         ...(post.published_at ? [{ property: "article:published_time", content: post.published_at }] : []),
         ...(post.updated_at ? [{ property: "article:modified_time", content: post.updated_at }] : []),
-        ...(post.cover_image ? [{ property: "og:image", content: post.cover_image }] : []),
+        ...(cover ? [{ property: "og:image", content: cover }, { name: "twitter:image", content: cover }] : []),
         { name: "twitter:title", content: post.title },
         { name: "twitter:description", content: post.excerpt ?? post.title },
       ],
@@ -50,7 +55,7 @@ export const Route = createFileRoute("/post/$slug")({
           mainEntityOfPage: { "@type": "WebPage", "@id": url },
           headline: post.title,
           description: post.excerpt,
-          image: post.cover_image ? [post.cover_image] : undefined,
+          image: cover ? [cover] : undefined,
           datePublished: post.published_at,
           dateModified: post.updated_at,
           author: { "@type": "Person", name: post.author?.display_name ?? "Academia HQ" },

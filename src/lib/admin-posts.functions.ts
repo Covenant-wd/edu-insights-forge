@@ -7,7 +7,15 @@ const postSchema = z.object({
   slug: z.string().trim().min(3).max(200).regex(/^[a-z0-9-]+$/, "lowercase, digits and dashes only"),
   excerpt: z.string().trim().max(500).optional().nullable(),
   content: z.string().min(1).max(200000),
-  cover_image: z.string().trim().url().max(1000).optional().nullable().or(z.literal("")).catch(null),
+  cover_image: z
+    .string()
+    .trim()
+    .max(1000)
+    .refine((v) => v === "" || /^https?:\/\//.test(v) || v.startsWith("/api/public/post-image/"), "Invalid image")
+    .optional()
+    .nullable()
+    .or(z.literal(""))
+    .catch(null),
   category_id: z.string().uuid().nullable().optional(),
   status: z.enum(["draft", "published"]).default("draft"),
   featured: z.boolean().default(false),
