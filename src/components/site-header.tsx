@@ -82,12 +82,12 @@ export function SiteHeader() {
 
       {/* Masthead */}
       <div className="container-blog flex items-center gap-4 py-5">
-        <Link to="/" className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2">
           <GraduationCap className="h-7 w-7 text-primary" strokeWidth={2.25} />
-          <span className="font-display text-[1.65rem] font-bold leading-none tracking-tight">
-            Academia<span className="text-primary">HQ</span>
+          <span className="font-display text-[1.35rem] sm:text-[1.65rem] font-bold leading-none tracking-tight">
+            Academia <span className="text-primary">HQ</span>
           </span>
-          <span className="hidden sm:inline self-end pb-0.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Blog</span>
+          <span className="self-end pb-0.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Blog</span>
         </Link>
 
         <div className="ml-auto flex items-center gap-1">
