@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -8,6 +8,7 @@ import FontFamily from "@tiptap/extension-font-family";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
 import ImageExt from "@tiptap/extension-image";
+import { toast } from "sonner";
 import {
   Bold,
   Italic,
@@ -24,10 +25,13 @@ import {
   AlignCenter,
   AlignRight,
   ImagePlus,
+  Upload,
+  Loader2,
   Eraser,
   Code,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { uploadPostImage, validateImageFile } from "@/lib/post-image-upload";
 import {
   Select,
   SelectContent,
@@ -66,6 +70,9 @@ function ToolbarButton({
 }
 
 function Toolbar({ editor }: { editor: Editor }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   const headingValue = editor.isActive("heading", { level: 2 })
     ? "h2"
     : editor.isActive("heading", { level: 3 })
@@ -87,9 +94,27 @@ function Toolbar({ editor }: { editor: Editor }) {
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
-  const addImage = () => {
+  const addImageByLink = () => {
     const url = window.prompt("Image URL");
     if (url) editor.chain().focus().setImage({ src: url }).run();
+  };
+
+  const uploadImage = async (file: File) => {
+    const invalid = validateImageFile(file);
+    if (invalid) {
+      toast.error(invalid);
+      return;
+    }
+    setUploading(true);
+    try {
+      const url = await uploadPostImage(file);
+      editor.chain().focus().setImage({ src: url }).run();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Upload failed");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   return (
@@ -178,8 +203,21 @@ function Toolbar({ editor }: { editor: Editor }) {
       <ToolbarButton title="Remove link" disabled={!editor.isActive("link")} onClick={() => editor.chain().focus().unsetLink().run()}>
         <Link2Off className="h-4 w-4" />
       </ToolbarButton>
-      <ToolbarButton title="Insert image" onClick={addImage}>
+      <ToolbarButton title="Insert image from URL" onClick={addImageByLink}>
         <ImagePlus className="h-4 w-4" />
+      </ToolbarButton>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) void uploadImage(f);
+        }}
+      />
+      <ToolbarButton title="Upload image" disabled={uploading} onClick={() => fileInputRef.current?.click()}>
+        {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
       </ToolbarButton>
 
       <div className="mx-1 h-6 w-px bg-border" />

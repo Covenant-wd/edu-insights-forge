@@ -1,10 +1,8 @@
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ImagePlus, Loader2, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-
-const MAX_BYTES = 10 * 1024 * 1024;
+import { uploadPostImage, validateImageFile } from "@/lib/post-image-upload";
 
 export function ImageUploadField({
   value,
@@ -19,23 +17,15 @@ export function ImageUploadField({
   const [uploading, setUploading] = useState(false);
 
   const pick = async (file: File) => {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please choose an image file");
-      return;
-    }
-    if (file.size > MAX_BYTES) {
-      toast.error("Image must be smaller than 10MB");
+    const invalid = validateImageFile(file);
+    if (invalid) {
+      toast.error(invalid);
       return;
     }
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
-      const path = `${crypto.randomUUID()}.${ext || "jpg"}`;
-      const { error } = await supabase.storage
-        .from("post-images")
-        .upload(path, file, { contentType: file.type, upsert: false });
-      if (error) throw error;
-      onChange(`/api/public/post-image/${path}`);
+      const url = await uploadPostImage(file);
+      onChange(url);
       toast.success("Image uploaded");
     } catch (err: any) {
       toast.error(err?.message ?? "Upload failed");
