@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-/** Serves post cover images stored in the private `post-images` bucket. */
+/**
+ * The post-images bucket is public now, so newly uploaded images resolve
+ * directly from Supabase Storage's own URL (see src/lib/post-image-upload.ts)
+ * with no server involved. This route only exists so posts saved before
+ * that change — whose content/cover_image still reference
+ * `/api/public/post-image/<path>` — keep resolving. It's a redirect, not a
+ * byte proxy, so it has no dependency on the service-role key.
+ */
 export const Route = createFileRoute("/api/public/post-image/$")({
   server: {
     handlers: {
@@ -8,16 +15,10 @@ export const Route = createFileRoute("/api/public/post-image/$")({
         const path = (params as { _splat?: string })._splat ?? "";
         if (!path || path.includes("..")) return new Response("Not found", { status: 404 });
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data, error } = await supabaseAdmin.storage.from("post-images").download(path);
-        if (error || !data) return new Response("Not found", { status: 404 });
+        const base = process.env.SUPABASE_URL;
+        if (!base) return new Response("Not found", { status: 404 });
 
-        return new Response(await data.arrayBuffer(), {
-          headers: {
-            "content-type": data.type || "image/jpeg",
-            "cache-control": "public, max-age=31536000, immutable",
-          },
-        });
+        return Response.redirect(`${base}/storage/v1/object/public/post-images/${path}`, 302);
       },
     },
   },
