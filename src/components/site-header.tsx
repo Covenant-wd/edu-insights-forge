@@ -87,6 +87,7 @@ export function SiteHeader() {
           <span className="font-display text-[1.35rem] sm:text-[1.65rem] font-bold leading-none tracking-tight">
             Academia <span className="text-primary">HQ</span>
           </span>
+          {" "}
           <span className="self-end pb-0.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Blog</span>
         </Link>
 
