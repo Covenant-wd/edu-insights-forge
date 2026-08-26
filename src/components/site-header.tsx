@@ -81,7 +81,7 @@ export function SiteHeader() {
       </div>
 
       {/* Masthead */}
-      <div className="container-blog flex items-center gap-3 py-5">
+      <div className="container-blog flex items-center gap-3 py-5 sm:gap-4">
         <Link to="/" className="flex items-center gap-2">
           <GraduationCap className="h-6 w-6 text-primary sm:h-7 sm:w-7" strokeWidth={2.25} />
           <span className="flex items-baseline gap-1 whitespace-nowrap font-display text-[1.15rem] font-bold leading-none tracking-tight sm:text-[1.65rem]">
