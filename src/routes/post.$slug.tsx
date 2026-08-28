@@ -119,16 +119,16 @@ function PostPage() {
         </div>
       )}
 
-      <div className="container-blog mt-10 grid gap-12 lg:grid-cols-[2.4fr_1fr]">
-        <div>
+      <div className="container-blog mt-10 grid gap-12 lg:grid-cols-[minmax(0,2.4fr)_minmax(0,1fr)]">
+        <div className="min-w-0">
           <AdSlot format="leaderboard" className="hidden md:flex mb-8" />
           <div className="prose-article" dangerouslySetInnerHTML={{ __html: renderContent(post.content) }} />
           <AdSlot format="large-rectangle" className="my-10" />
 
-          <div className="mt-8 flex items-center gap-3 border-y border-border/60 py-5">
-            <Share2 className="h-4 w-4 text-muted-foreground" />
+          <div className="mt-8 flex flex-wrap items-center gap-3 border-y border-border/60 py-5">
+            <Share2 className="h-4 w-4 shrink-0 text-muted-foreground" />
             <span className="text-sm font-semibold">Share this article</span>
-            <div className="ml-auto flex gap-2">
+            <div className="flex flex-wrap gap-2 sm:ml-auto">
               {["Twitter", "Facebook", "WhatsApp", "LinkedIn"].map((n) => (
                 <a key={n} href="#" className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">{n}</a>
               ))}
