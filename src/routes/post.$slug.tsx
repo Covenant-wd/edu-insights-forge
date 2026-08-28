@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Clock, Calendar, Share2 } from "lucide-react";
+import { Clock, Calendar } from "lucide-react";
+import { ShareButtons } from "@/components/share-buttons";
 import sanitizeHtml from "sanitize-html";
 import { getPostBySlug } from "@/lib/posts.functions";
 import { PostCard } from "@/components/post-card";
@@ -125,15 +126,7 @@ function PostPage() {
           <div className="prose-article" dangerouslySetInnerHTML={{ __html: renderContent(post.content) }} />
           <AdSlot format="large-rectangle" className="my-10" />
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 border-y border-border/60 py-5">
-            <Share2 className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <span className="text-sm font-semibold">Share this article</span>
-            <div className="flex flex-wrap gap-2 sm:ml-auto">
-              {["Twitter", "Facebook", "WhatsApp", "LinkedIn"].map((n) => (
-                <a key={n} href="#" className="rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">{n}</a>
-              ))}
-            </div>
-          </div>
+          <ShareButtons title={post.title} />
 
           {post.author?.bio && (
             <div className="mt-8 border border-border/60 bg-card p-6">
