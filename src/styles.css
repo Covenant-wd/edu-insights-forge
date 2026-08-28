@@ -118,6 +118,22 @@
     scroll-behavior: smooth;
   }
 
+  /* Never let any child (ads, embeds, long tables) push the page wider
+     than the screen — this was the source of sideways scrolling on phones. */
+  html,
+  body {
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  img,
+  video,
+  iframe,
+  embed,
+  object {
+    max-width: 100%;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -174,9 +190,30 @@
 
 @utility prose-article {
   font-family: var(--font-serif);
-  font-size: 1.1875rem;
+  font-size: 1.125rem;
   line-height: 1.8;
   color: var(--color-foreground);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+
+  @media (min-width: 768px) {
+    font-size: 1.1875rem;
+  }
+
+  & img, & video, & iframe {
+    max-width: 100%;
+    height: auto;
+  }
+  & pre {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  & table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 
   & > p:first-of-type::first-letter {
     font-family: var(--font-display);

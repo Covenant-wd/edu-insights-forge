@@ -32,8 +32,8 @@ export function AdSlot({ format = "rectangle", className, sticky }: { format?: F
   if (code) {
     return (
       <div
-        className={cn("mx-auto overflow-hidden", sticky && "sticky top-24", className)}
-        style={{ maxWidth: s.w }}
+        className={cn("mx-auto max-w-full overflow-hidden", sticky && "sticky top-24", className)}
+        style={{ maxWidth: `min(${s.w}px, 100%)` }}
         data-ad-slot={format}
       >
         <RawAdMarkup html={code} />
@@ -44,11 +44,11 @@ export function AdSlot({ format = "rectangle", className, sticky }: { format?: F
   return (
     <div
       className={cn(
-        "mx-auto flex items-center justify-center rounded-lg border border-dashed border-border bg-muted/40 text-[11px] uppercase tracking-widest text-muted-foreground",
+        "mx-auto flex w-full items-center justify-center rounded-lg border border-dashed border-border bg-muted/40 text-[11px] uppercase tracking-widest text-muted-foreground",
         sticky && "sticky top-24",
         className,
       )}
-      style={{ maxWidth: s.w, aspectRatio: `${s.w} / ${s.h}` }}
+      style={{ maxWidth: `min(${s.w}px, 100%)`, aspectRatio: `${s.w} / ${s.h}` }}
       data-ad-slot={format}
       aria-label="Advertisement"
     >
