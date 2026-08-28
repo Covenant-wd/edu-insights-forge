@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Clock, Calendar, Share2 } from "lucide-react";
+import { Clock, Calendar } from "lucide-react";
+import { ShareButtons } from "@/components/share-buttons";
 import sanitizeHtml from "sanitize-html";
 import { getPostBySlug } from "@/lib/posts.functions";
 import { PostCard } from "@/components/post-card";
