@@ -77,6 +77,10 @@ export const Route = createFileRoute("/post/$slug")({
 function PostPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(postQuery(slug));
+  const postId = data?.post.id;
+  useEffect(() => {
+    if (postId) void trackPostView(postId);
+  }, [postId]);
   if (!data) return null;
   const { post, related } = data;
 
