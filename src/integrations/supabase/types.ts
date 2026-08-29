@@ -172,6 +172,35 @@ export type Database = {
           },
         ]
       }
+      post_views: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          visitor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_views_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string | null
@@ -294,7 +323,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_daily_traffic: {
+        Args: { _days?: number }
+        Returns: {
+          day: string
+          views: number
+          visitors: number
+        }[]
+      }
+      admin_post_views: {
+        Args: { _days?: number }
+        Returns: {
+          post_id: string
+          recent_views: number
+          slug: string
+          status: string
+          title: string
+          today_views: number
+          total_views: number
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "editor" | "user"
