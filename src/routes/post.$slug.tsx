@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { trackPostView } from "@/lib/track-view";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Clock, Calendar } from "lucide-react";
 import { ShareButtons } from "@/components/share-buttons";
