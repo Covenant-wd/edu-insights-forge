@@ -63,6 +63,7 @@ function AdminHome() {
         </div>
         <div className="flex gap-2">
           <Link to="/admin/new"><Button><Plus className="mr-1.5 h-4 w-4" />New post</Button></Link>
+          <Link to="/admin/analytics"><Button variant="secondary"><BarChart3 className="mr-1.5 h-4 w-4" />Analytics</Button></Link>
           <Link to="/admin/ads"><Button variant="secondary">Ad snippets</Button></Link>
           <Link to="/admin/archive"><Button variant="secondary">Archive</Button></Link>
           <Button variant="outline" onClick={signOut}><LogOut className="mr-2 h-4 w-4" />Sign out</Button>
