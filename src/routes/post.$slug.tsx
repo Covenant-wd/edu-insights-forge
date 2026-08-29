@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { trackPostView } from "@/lib/track-view";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Clock, Calendar } from "lucide-react";
 import { ShareButtons } from "@/components/share-buttons";
@@ -77,6 +79,10 @@ export const Route = createFileRoute("/post/$slug")({
 function PostPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(postQuery(slug));
+  const postId = data?.post.id;
+  useEffect(() => {
+    if (postId) void trackPostView(postId);
+  }, [postId]);
   if (!data) return null;
   const { post, related } = data;
 
