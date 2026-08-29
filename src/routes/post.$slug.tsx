@@ -129,6 +129,7 @@ function PostPage() {
       <div className="container-blog mt-10 grid gap-12 lg:grid-cols-[minmax(0,2.4fr)_minmax(0,1fr)]">
         <div className="min-w-0">
           <AdSlot format="leaderboard" className="hidden md:flex mb-8" />
+          <AdSlot format="mobile-banner" className="md:hidden mb-8" />
           <div className="prose-article" dangerouslySetInnerHTML={{ __html: renderContent(post.content) }} />
           <AdSlot format="large-rectangle" className="my-10" />
 
