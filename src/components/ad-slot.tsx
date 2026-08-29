@@ -36,7 +36,7 @@ export function AdSlot({ format = "rectangle", className, sticky }: { format?: F
     return (
       <div
         className={cn("mx-auto max-w-full overflow-hidden", sticky && "sticky top-24", className)}
-        style={{ maxWidth: `min(${s.w}px, 100%)` }}
+        style={{ maxWidth: `min(${s.w}px, 100%)`, minHeight: s.h }}
         data-ad-slot={format}
       >
         <RawAdMarkup html={code} />
