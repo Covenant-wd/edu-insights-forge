@@ -27,7 +27,10 @@ export function AdSlot({ format = "rectangle", className, sticky }: { format?: F
     staleTime: 5 * 60 * 1000,
   });
 
-  const code = data?.find((r) => r.zone_key === s.zoneKey)?.code?.trim();
+  const findCode = (key: string) => data?.find((r) => r.zone_key === key)?.code?.trim();
+  // Mobile banner falls back to the leaderboard code so phones still show
+  // a banner even when only the 728x90 zone is configured.
+  const code = findCode(s.zoneKey) ?? (format === "mobile-banner" ? findCode("banner_leaderboard") : undefined);
 
   if (code) {
     return (
